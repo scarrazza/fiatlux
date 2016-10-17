@@ -14,6 +14,7 @@ AC_CONFIG_FILES([Makefile])
 AC_CONFIG_FILES([bin/Makefile])
 AC_CONFIG_FILES([bin/fiatlux-config])
 AC_CONFIG_FILES([src/Makefile])
+AC_CONFIG_FILES([examples/Makefile])
 AM_INIT_AUTOMAKE([subdir-objects])
 
 # Checks for programs.
