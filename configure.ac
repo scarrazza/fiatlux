@@ -21,6 +21,9 @@ AM_INIT_AUTOMAKE([subdir-objects])
 AC_PROG_CXX
 AC_PROG_CC
 
+# Checks for dependencies
+AC_SEARCH_LHAPDF
+
 # Check for libraries.
 AX_CXX_COMPILE_STDCXX_11([noext])
 

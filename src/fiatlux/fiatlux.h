@@ -5,11 +5,19 @@
 
 #pragma once
 
+#include <functional>
+using std::function;
+
 namespace fiatlux
 {
+  using partons = function<double(int,double,double)>;
+
   class FiatLux
   {
   public:
-    FiatLux();
+    FiatLux(partons const&f);
+
+  private:
+    partons _xfxQ;
   };
 }

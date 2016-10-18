@@ -5,9 +5,12 @@
 
 #include "fiatlux/fiatlux.h"
 
+#include <iostream>
+
 namespace fiatlux
 {
-  FiatLux::FiatLux()
+  FiatLux::FiatLux(const partons &f):
+    _xfxQ(f)
   {
   }
 }
