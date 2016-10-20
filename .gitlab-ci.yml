@@ -1,0 +1,5 @@
+image: scarrazza/ubuntuhep
+
+job:
+  script: ./autogen.sh -i && ./configure && make && ./examples/generate
+  
