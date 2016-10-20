@@ -1,0 +1,7 @@
+qed_running: off # determines the running of alpha.
+q2_max: 1E9      # the maximum allowed Q2.
+eps_base: 1E-5   # precision on final integration of double integral.
+eps_rel: 1E-1    # extra precision on any single integration.
+mproton: 0.938272046  # the proton mass.
+alpha_ref: 7.29735256981631480e-03 # the reference alpha constant.
+elastic_param: 1 # the elastic param type, options elastic_dipole (0), elastic_A1_world_spline (1)

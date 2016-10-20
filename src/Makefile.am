@@ -10,5 +10,5 @@ otherinclude_HEADERS = fiatlux/fiatlux.h \
 		       fiatlux/elastic.h \
 		       fiatlux/settings.h
 
-libfiatlux_la_LDFLAGS = -version-info 0:0:0 $(GSL_LDFLAGS)
-libfiatlux_la_CPPFLAGS= -Wall -Wextra -fPIC $(GSL_CPPFLAGS)
+libfiatlux_la_LDFLAGS = -version-info 0:0:0 $(GSL_LDFLAGS) $(YAML_LDFLAGS)
+libfiatlux_la_CPPFLAGS= -Wall -Wextra -fPIC $(GSL_CPPFLAGS) $(YAML_CPPFLAGS)

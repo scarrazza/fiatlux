@@ -11,24 +11,21 @@
 namespace fiatlux
 {
   //_________________________________________________________________________
-  FiatLux::FiatLux(xfxq const& f):
-    _xfxq(f),   
-    _elastic{}
+  FiatLux::FiatLux(const string &filename, xfxq const& f):
+    _xfxq(f)
   {
-    string me = "FiatLux::FiatLux";
+    input().load(filename);
+    _elastic = unique_ptr<ElasticPhoton>(new ElasticPhoton{});
 
-    if (s().qed_running)
-      {
-        info(me, "QED running activated");
-        throw std::runtime_error("not implemented");
-      }
+    if (input().get<bool>("qed_running"))
+      throw runtime_exception("FiatLux:FiatLux", "QED running activated");
   }
 
   //_________________________________________________________________________
-  luxqed FiatLux::evaluate(const double &x, const double &q2) const
+  luxqed FiatLux::evaluatephoton(const double &x, const double &q2) const
   {
     luxqed e;
-    e.elastic = _elastic.evaluate(x,q2);
+    e.elastic = _elastic->evaluatephoton(x,q2);
     return e;
   }
 }

@@ -15,21 +15,26 @@ namespace fiatlux
 {
   //_________________________________________________________________________
   ElasticPhoton::ElasticPhoton():
-    _integrator{std::bind(&ElasticPhoton::integrand, this, _1, _2)}
+    Integrator{},
+    _mproton2(pow(input().get<double>("mproton"), 2)),
+    _eps_base(input().get<double>("eps_base")),
+    _eps_rel(input().get<double>("eps_rel")),
+    _log_q2_max(log(input().get<double>("q2_max"))),
+    _alpha_ref(input().get<double>("alpha_ref")),
+    _elastic_param(input().get<int>("elastic_param"))
   {
   }
 
   //_________________________________________________________________________
-  double ElasticPhoton::evaluate(const double &x, const double &q2) const
+  double ElasticPhoton::evaluatephoton(const double &x, const double &q2) const
   {
     double res = 0;
     if (x != 1.0)
       {
-        const double eps_local = s().eps_base * s().eps_rel * pow(1.0-x, 4);
-        const double Q2min = pow(x*s().mproton, 2)/(1.0-x);
-        res = _integrator.integrate(log(Q2min), log(s().q2_max), eps_local, x) * s().alpha_ref / M_PI / 2.0;
+        const double eps_local = _eps_base * _eps_rel * pow(1.0-x, 4);
+        const double Q2min = x*x*_mproton2/(1.0-x);
+        res = integrate(log(Q2min), _log_q2_max, eps_local, x) * _alpha_ref / M_PI / 2.0;
       }
-
     return res;
   }
 
@@ -38,7 +43,7 @@ namespace fiatlux
   {
     const double Q2 = exp(lnQ2);
     const auto   ge_gm = elastic_ge_gm(Q2);
-    const double tau = Q2/pow(2*s().mproton, 2);
+    const double tau = Q2/(4*_mproton2);
     const double ge2 = pow(ge_gm[0], 2);
     const double gm2 = pow(ge_gm[1], 2);
     const double F2 = (ge2 + gm2*tau)/(1.0 + tau);
@@ -53,6 +58,19 @@ namespace fiatlux
   array<double,2> ElasticPhoton::elastic_ge_gm(double const& q2) const
   {
     array<double, 2> res;
+
+    switch (_elastic_param) {
+      case elastic_dipole:
+        break;
+
+      case elastic_A1_world_spline:
+        break;
+
+      default:
+        info("ElasticPhoton::elastic_ge_gm", "Unrecognised elastic_param");
+        throw std::runtime_error("Unrecognised elastic_param");
+      }      
+
     return res;
   }
 }

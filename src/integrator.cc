@@ -14,12 +14,11 @@ namespace fiatlux
   double int_gsl(double x, void *p)
   {
     struct int_param * params = (struct int_param *) p;
-    return params->it->evaluate(x, params->extra);
+    return params->it->integrand(x, params->extra);
   }
 
   //_________________________________________________________________________
-  Integrator::Integrator(const integrand &f):
-    _integrand(f)
+  Integrator::Integrator()
   {
     // allocate gsl integration workspace
     _gslwork = gsl_integration_workspace_alloc(10000);

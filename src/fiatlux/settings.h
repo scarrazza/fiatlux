@@ -5,8 +5,18 @@
 
 #pragma once
 
+#include <string>
+using std::string;
+
+#include <yaml-cpp/yaml.h>
+
 namespace fiatlux
 {
+  /**
+   * @brief The eparam enum
+   */
+  enum {elastic_dipole, elastic_A1_world_spline};
+
   /**
    * @brief The Settings class.
    *
@@ -16,13 +26,30 @@ namespace fiatlux
   class Settings
   {
   public:
-    Settings();
-    bool qed_running; //!< determines the running of alpha.
-    double q2_max;   //!< the maximum allowed Q2.
-    double eps_base; //!< precision on final integration of double integral.
-    double eps_rel;  //!< extra precision on any single integration.
-    double mproton;  //!< the proton mass.
-    double alpha_ref;//!< the reference alpha constant.
+    Settings() {}
+
+    /**
+     * @brief load
+     * @param filename
+     */
+    void load(string const& filename);
+
+    /**
+     *
+     */
+    template<class T> T get(string const& key)
+    {
+      T result = _config[key].as<T>();
+      return result;
+    }
+
+    /**
+     * @brief print
+     */
+    void print() const;
+
+  private:
+    YAML::Node _config;
   };
 
   /**
@@ -34,5 +61,5 @@ namespace fiatlux
    * @return a single instance of the Settings class, available from
    * all parts of the code.
    */
-  Settings& s();
+  Settings& input();
 }

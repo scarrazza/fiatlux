@@ -18,7 +18,7 @@ double (PDF::*fn)(int, double, double) const = &PDF::xfxQ; // extracting LHAPDF 
 int main()
 {
   PDF *pdf = mkPDF("PDF4LHC15_nnlo_100", 0);
-  FiatLux lux{std::bind(fn, pdf, _1, _2, _3)};
+  FiatLux lux{"examples/runcard.yml", std::bind(fn, pdf, _1, _2, _3)};
 
   vector<double> x = {0.90483741668764672};
   vector<double> q2= {2.0};
@@ -27,7 +27,7 @@ int main()
   for (auto const& iq2: q2)
     for (auto const& ix: x)
       {
-        const auto pht = lux.evaluate(ix,iq2);
+        const auto pht = lux.evaluatephoton(ix,iq2);
         cout << scientific << ix << "\t" << iq2 << "\t" << pht.elastic << endl;
       }
 

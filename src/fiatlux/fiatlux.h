@@ -6,7 +6,11 @@
 #pragma once
 
 #include <functional>
+#include <string>
+#include <memory>
 using std::function;
+using std::string;
+using std::unique_ptr;
 
 #include <fiatlux/elastic.h>
 
@@ -47,7 +51,7 @@ namespace fiatlux
      * Takes a PDF provider which returns x*f(fl,x,Q).
      * @param f a std::function object following the \c xfxq definition.
      */
-    FiatLux(xfxq const&f);
+    FiatLux(string const& filename, xfxq const&f);
 
     /**
      * @brief Evaluates the photon PDF for a given x and Q2.
@@ -59,10 +63,13 @@ namespace fiatlux
      * @param q2 the energy scale.
      * @return a luxqed structure with all integral pieces and the total sum.
      */
-    luxqed evaluate(double const&x, double const& q2) const;
+    luxqed evaluatephoton(double const&x, double const& q2) const;
+
+  protected:
+    void load_settings(string const& filename) const;
 
   private:
     xfxq _xfxq; //!< the function which holds the QCD parton information.
-    const ElasticPhoton _elastic; //!< the integrator for the elastic component.
+    unique_ptr<ElasticPhoton> _elastic; //!< the integrator for the elastic component.
   };
 }

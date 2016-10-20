@@ -13,14 +13,6 @@ using std::function;
 namespace fiatlux
 {
   /**
-   * @brief Typename for the integrand 1D function.
-   *
-   * The prototype takes the integration variable
-   * and an extra parameter and returns a double.
-   */
-  using integrand = function<double(double const&, double const&)>;
-
-  /**
    * @brief The Integrator class which uses GSL (QAG).
    *
    * This class takes as input the integrand function and provides
@@ -29,13 +21,7 @@ namespace fiatlux
   class Integrator
   {
   public:
-    /**
-     * @brief The Integrator constructor.
-     *
-     * Takes as input the integrand function.
-     * @param f the integrand type function.
-     */
-    Integrator(integrand const& f);
+    Integrator();  //!< The class constructor
     ~Integrator(); //!< The class destructor
 
     /**
@@ -55,14 +41,13 @@ namespace fiatlux
      * access to the GSL integration routines in a C++ style.
      *
      * @param x the integration variable.
+     * @param extra an optional extra double
      * @return the integrand evaluated at x.
      */
-    double evaluate(double const& x, double const& extra) const { return _integrand(x, extra); }
+    virtual double integrand(double const& x, double const& extra) const = 0;
 
   private:
-    integrand _integrand; //!< the integrand.
     gsl_integration_workspace * _gslwork; //!< the gsl workpace for integration.
-
     friend double int_gsl(double x, void *p); //!< the auxiliary function for gsl integration.
   };
 }
