@@ -25,7 +25,10 @@ namespace fiatlux
   luxqed FiatLux::evaluatephoton(const double &x, const double &q2) const
   {
     luxqed e;
-    e.elastic = _elastic->evaluatephoton(x,q2);
+    e.elastic = _elastic->evaluatephoton(x);
+    e.inelastic_pf = 0;
+    e.msbar_pf = 0;
+    e.total = e.elastic + e.inelastic_pf + e.msbar_pf;
     return e;
   }
 }

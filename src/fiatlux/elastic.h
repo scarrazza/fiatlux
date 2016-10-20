@@ -39,7 +39,7 @@ namespace fiatlux
      * @param q2 the energy scale.
      * @return the elastic integral for the photon PDF.
      */
-    double evaluatephoton(double const&x, double const& q2) const;
+    double evaluatephoton(double const&x) const;
 
     /**
      * @brief The elastic integrand.
@@ -54,10 +54,20 @@ namespace fiatlux
      *
      * For a given Q^2, return the electric and magnetic form factors
      * in the output array. GM includes the mum_proton factor.
+     * This implementation follows arXiv:1307.6227.
+     *
      * @param q2 the input energy.
      * @return a 2D stack array with GE (0) and GM (1)
      */
     array<double,2> elastic_ge_gm(double const& q2) const;
+
+    /**
+     * @brief The standard elastic dipole factor
+     *
+     * @param q2 the input energy.
+     * @return the elastic dipole factor
+     */
+    double elastic_dipole_factor(double const& q2) const;
 
   private:
     double _mproton2;  //!< the square of the proton mass.

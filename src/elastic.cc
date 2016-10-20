@@ -26,7 +26,7 @@ namespace fiatlux
   }
 
   //_________________________________________________________________________
-  double ElasticPhoton::evaluatephoton(const double &x, const double &q2) const
+  double ElasticPhoton::evaluatephoton(const double &x) const
   {
     double res = 0;
     if (x != 1.0)
@@ -57,13 +57,33 @@ namespace fiatlux
   //_________________________________________________________________________
   array<double,2> ElasticPhoton::elastic_ge_gm(double const& q2) const
   {
-    array<double, 2> res;
+    array<double, 2> ge_gm;
 
     switch (_elastic_param) {
+
       case elastic_dipole:
+        ge_gm[0] = elastic_dipole_factor(q2);
+        ge_gm[1] = input().get<double>("mum_proton") * ge_gm[0];
         break;
 
       case elastic_A1_world_spline:
+      case elastic_A1_world_pol_spline:
+        int iQ2;
+        if (q2 > 10) iQ2 = 1000;
+        else iQ2 = floor((q2+5e-3)/1e-2);
+
+        if (iQ2 < 0) throw runtime_exception("ElasticPhoton::elastic_ge_gm", "iQ2 < 0");
+
+        if (iQ2 >= 1000)
+          {
+
+          }
+        else
+          {
+
+          }
+
+        ge_gm[1] *= input().get<double>("mum_proton");
         break;
 
       default:
@@ -71,6 +91,15 @@ namespace fiatlux
         throw std::runtime_error("Unrecognised elastic_param");
       }      
 
-    return res;
+    ge_gm[0] *= input().get<double>("elastic_electric_rescale");
+    ge_gm[1] *= input().get<double>("elastic_magnetic_rescale");
+
+    return ge_gm;
+  }
+
+  //_________________________________________________________________________
+  double ElasticPhoton::elastic_dipole_factor(const double &q2) const
+  {
+    return 1.0/pow(1.0+q2/0.71, 2);
   }
 }

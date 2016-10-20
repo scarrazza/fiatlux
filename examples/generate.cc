@@ -8,6 +8,7 @@
 using namespace std;
 
 #include <fiatlux/fiatlux.h>
+#include <fiatlux/settings.h>
 using namespace fiatlux;
 using namespace std::placeholders;
 
@@ -15,20 +16,35 @@ using namespace std::placeholders;
 using namespace LHAPDF;
 double (PDF::*fn)(int, double, double) const = &PDF::xfxQ; // extracting LHAPDF methods
 
+double y_of_zeta(double const& y, double const& a)
+{
+  return y + a*(1.0-exp(-y));
+}
+
 int main()
 {
-  PDF *pdf = mkPDF("PDF4LHC15_nnlo_100", 0);
-  FiatLux lux{"examples/runcard.yml", std::bind(fn, pdf, _1, _2, _3)};
+  //PDF *pdf = mkPDF("PDF4LHC15_nnlo_100", 0);
+  FiatLux lux{"examples/runcard.yml",NULL};
 
-  vector<double> x = {0.90483741668764672};
-  vector<double> q2= {2.0};
+  vector<double> q2= {input().get<double>("q2")};
 
-  cout << "Columns: x Q2 elastic" << endl;
+  cout << setprecision(15) << scientific;
+
+  //cout << "Columns: x Q2 elastic inelastic_PF MSbar-PF total" << endl;
   for (auto const& iq2: q2)
-    for (auto const& ix: x)
+    for (auto i = 1; i <= 100; i++)
       {
-        const auto pht = lux.evaluatephoton(ix,iq2);
-        cout << scientific << ix << "\t" << iq2 << "\t" << pht.elastic << endl;
+        const auto y = y_of_zeta(i*0.1, 0);
+        const auto x = exp(-y);
+
+        const auto pht = lux.evaluatephoton(x,iq2);
+        cout << x << "\t"
+             << iq2 << "\t"
+             << pht.elastic << "\t"
+             << pht.inelastic_pf << "\t"
+             << pht.msbar_pf << "\t"
+             << pht.total << "\t"
+             << endl;
       }
 
   return 0;
