@@ -1,4 +1,4 @@
-image: scarrazza/ubuntuhep
+image: scarrazza/ubuntuhep:xenial
 
 job:
   script: ./autogen.sh -i && ./configure && make && ./examples/generate
