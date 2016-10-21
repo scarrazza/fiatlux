@@ -32,6 +32,9 @@ namespace fiatlux
   {
     if (_elastic_param != elastic_dipole)
       {
+
+        // read data from 1307.6227
+        // interpolate latter.
         fstream f;
         switch (_elastic_param) {
           case elastic_A1_world_spline:
@@ -50,7 +53,6 @@ namespace fiatlux
         _fit.push_back({0,1,1});
         _fit_uperr.push_back({0,1,1});
         _fit_downerr.push_back({0,1,1});
-
 
         string tmp;
         double a, b, c, d, e, g;

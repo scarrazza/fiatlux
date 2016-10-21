@@ -65,6 +65,9 @@ namespace fiatlux
 
     /**
      * @brief The standard elastic dipole factor
+     * \f[
+     *    G(Q^2) = \left( 1 + \frac{Q^2}{0.71 \text{GeV}^2} \right)^2
+     * \f]
      *
      * @param q2 the input energy.
      * @return the elastic dipole factor
