@@ -32,7 +32,7 @@ namespace fiatlux
      * @param eps the required relative error.
      * @return the integral value.
      */
-    double integrate(double const& xmin, double const& xmax, double const& eps = 1E-4, double const& extra = 0) const;
+    double integrate(double const& xmin, double const& xmax, double const& eps = 1E-4) const;
 
   protected:
     /**
@@ -42,7 +42,7 @@ namespace fiatlux
      * @param extra an optional extra double
      * @return the integrand evaluated at x.
      */
-    virtual double integrand(double const& x, double const& extra) const = 0;
+    virtual double integrand(double const& x) const = 0;
 
     /**
      * @brief The dgauss integrator from cernlib.
@@ -53,7 +53,7 @@ namespace fiatlux
      * @param extra optional parameter for 1D integrand which require extra information.
      * @return the integral from a to b.
      */
-    double dgauss(double const& a, double const& b, double const& eps, double const& extra) const;
+    double dgauss(double const& a, double const& b, double const& eps) const;
 
   private:
     double _cst;         //!< param for dgauss

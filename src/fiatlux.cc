@@ -16,6 +16,7 @@ namespace fiatlux
   {
     input().load(filename);
     _elastic = unique_ptr<ElasticPhoton>(new ElasticPhoton{});
+    _inelastic = unique_ptr<InelasticPhoton>(new InelasticPhoton{});
 
     if (input().get<bool>("qed_running"))
       throw runtime_exception("FiatLux:FiatLux", "QED running activated");
@@ -25,8 +26,8 @@ namespace fiatlux
   luxqed FiatLux::evaluatephoton(const double &x, const double &q2) const
   {
     luxqed e;
-    e.elastic = _elastic->evaluatephoton(x);
-    e.inelastic_pf = 0;
+    e.elastic = _elastic->evaluatephoton(x, q2);
+    e.inelastic_pf = _inelastic->evaluatephoton(x, q2);
     e.msbar_pf = 0;
     e.total = e.elastic + e.inelastic_pf + e.msbar_pf;
     return e;

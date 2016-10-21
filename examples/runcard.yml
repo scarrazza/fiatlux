@@ -21,8 +21,12 @@ mum_proton: 2.792847356
 elastic_electric_rescale: 1
 elastic_magnetic_rescale: 1
 
+use_mu2_as_upper_limit: off
+
+q2min_inel_override: 0.0
+q2max_inel_override: 1E300
 
 # TEMPORARY
 q2: 2
 
-verbose: on
+verbose: off

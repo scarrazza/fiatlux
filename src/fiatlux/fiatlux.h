@@ -13,6 +13,7 @@ using std::string;
 using std::unique_ptr;
 
 #include <fiatlux/elastic.h>
+#include <fiatlux/inelastic.h>
 
 namespace fiatlux
 {
@@ -71,5 +72,6 @@ namespace fiatlux
   private:
     xfxq _xfxq; //!< the function which holds the QCD parton information.
     unique_ptr<ElasticPhoton> _elastic; //!< the integrator for the elastic component.
+    unique_ptr<InelasticPhoton> _inelastic; //!< the integrator for the inelastic component.
   };
 }

@@ -42,4 +42,15 @@ namespace fiatlux {
     runtime_exception(string const& tag, string const& what):
       std::runtime_error(infos(tag, what)) {}
   };
+
+  /**
+   * @brief swap method for doubles
+   */
+  inline void swap(double* x, double* y)
+  {
+    double tmp;
+    tmp = *y;
+    *y = *x;
+    *x = tmp;
+  }
 }

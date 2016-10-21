@@ -45,13 +45,13 @@ namespace fiatlux
   }
 
   //_________________________________________________________________________
-  double Integrator::integrate(const double &xmin, const double &xmax, const double &eps, const double &extra) const
+  double Integrator::integrate(const double &xmin, const double &xmax, const double &eps) const
   {
-    return dgauss(xmin, xmax, eps, extra);
+    return dgauss(xmin, xmax, eps);
   }
 
   //_________________________________________________________________________
-  double Integrator::dgauss(const double &a, const double &b, const double &eps, const double &extra) const
+  double Integrator::dgauss(const double &a, const double &b, const double &eps) const
   {
     int i;
     double aa, bb, y, c1, c2, s8, s16, u;
@@ -74,13 +74,13 @@ namespace fiatlux
     for (i = 1; i <= 4; i++)
       {
         u = _x[i-1]*c2;
-        s8 += _w[i-1]*(integrand(c1+u, extra)+integrand(c1-u, extra));
+        s8 += _w[i-1]*(integrand(c1+u)+integrand(c1-u));
       }
 
     for (i = 5; i <= 12 ; i++)
       {
         u = _x[i-1]*c2;
-        s16 += _w[i-1]*(integrand(c1+u, extra)+integrand(c1-u, extra));
+        s16 += _w[i-1]*(integrand(c1+u)+integrand(c1-u));
       }
 
     s8 *= c2;
