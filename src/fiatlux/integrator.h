@@ -6,14 +6,14 @@
 #pragma once
 
 #include <functional>
+#include <array>
 using std::function;
-
-#include <gsl/gsl_integration.h>
+using std::array;
 
 namespace fiatlux
 {
   /**
-   * @brief The Integrator class which uses GSL (QAG).
+   * @brief The Integrator class which uses Adaptative Gaussian Quadrature.
    *
    * This class takes as input the integrand function and provides
    * the integrate method which performs the integration.
@@ -22,7 +22,6 @@ namespace fiatlux
   {
   public:
     Integrator();  //!< The class constructor
-    ~Integrator(); //!< The class destructor
 
     /**
      * @brief Integrates the integrand passed during initialization
@@ -37,8 +36,7 @@ namespace fiatlux
 
   protected:
     /**
-     * @brief Protected auxiliary function which provides
-     * access to the GSL integration routines in a C++ style.
+     * @brief Protected virtual integrand function.
      *
      * @param x the integration variable.
      * @param extra an optional extra double
@@ -46,8 +44,20 @@ namespace fiatlux
      */
     virtual double integrand(double const& x, double const& extra) const = 0;
 
+    /**
+     * @brief The dgauss integrator from cernlib.
+     *
+     * @param a the lower integration bound.
+     * @param b the upper integratio bound.
+     * @param eps the required accuracy.
+     * @param extra optional parameter for 1D integrand which require extra information.
+     * @return the integral from a to b.
+     */
+    double dgauss(double const& a, double const& b, double const& eps, double const& extra) const;
+
   private:
-    gsl_integration_workspace * _gslwork; //!< the gsl workpace for integration.
-    friend double int_gsl(double x, void *p); //!< the auxiliary function for gsl integration.
+    double _cst;         //!< param for dgauss
+    array<double,12> _w; //!< param for dgauss
+    array<double,12> _x; //!< param for dgauss
   };
 }

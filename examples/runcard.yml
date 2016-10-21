@@ -8,7 +8,7 @@ alpha_ref: 7.29735256981631480e-03 # the reference alpha constant.
 # 0 dipole
 # 1 A1_world_spline
 # 2 A1_world_pol_spline
-elastic_param: 0
+elastic_param: 2
 
 # proton mass from 2015 update of PDG review
 mproton: 0.938272046
@@ -24,3 +24,5 @@ elastic_magnetic_rescale: 1
 
 # TEMPORARY
 q2: 2
+
+verbose: on

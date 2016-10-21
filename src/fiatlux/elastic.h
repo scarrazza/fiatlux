@@ -7,8 +7,10 @@
 
 #include <array>
 #include <string>
+#include <vector>
 using std::array;
 using std::string;
+using std::vector;
 
 #include <fiatlux/integrator.h>
 
@@ -70,11 +72,18 @@ namespace fiatlux
     double elastic_dipole_factor(double const& q2) const;
 
   private:
-    double _mproton2;  //!< the square of the proton mass.
-    double _eps_base;  //!< precision on final integration of double integral.
-    double _eps_rel;   //!< extra precision on any single integration.
-    double _log_q2_max;//!< the maximum allowed Q2
-    double _alpha_ref; //!< the reference alpha
+    double _mproton2;   //!< the square of the proton mass.
+    double _eps_base;   //!< precision on final integration of double integral.
+    double _eps_rel;    //!< extra precision on any single integration.
+    double _log_q2_max; //!< the maximum allowed Q2.
+    double _alpha_ref;  //!< the reference alpha.
+    double _mum_proton; //!< proton magnetic momentum.
+    double _elastic_electric_rescale; //!< the ge rescale.
+    double _elastic_magnetic_rescale; //!< the gm rescale.
     int _elastic_param;//! the elastic parametrization.
+
+    vector<array<double, 3>> _fit; //!< the A1 fit container.
+    vector<array<double, 3>> _fit_uperr; //!< the upper bound fit error.
+    vector<array<double, 3>> _fit_downerr; //!< the down bound fit error.
   };
 }

@@ -23,7 +23,6 @@ AC_PROG_CC
 
 # Checks for dependencies
 AC_SEARCH_LHAPDF
-AC_SEARCH_GSL
 AC_SEARCH_YAML
 
 # Check for libraries.
