@@ -10,17 +10,14 @@
 
 using std::min;
 using std::max;
+using std::cout;
+using std::endl;
 
 namespace fiatlux
 {
   //_________________________________________________________________________
   InelasticPhoton::InelasticPhoton():
-    Integrator{},
-    _eps_base(input().get<double>("eps_base")),
-    _eps_rel(input().get<double>("eps_rel")),
-    _alpha_ref(input().get<double>("alpha_ref")),
-    _x(0),
-    _q2(0),
+    Integrator{}, ProtonStructure{},
     _q2min_inel_override(input().get<double>("q2min_inel_override")),
     _q2max_inel_override(input().get<double>("q2max_inel_override")),
     _use_mu2_as_upper_limit(input().get<bool>("use_mu2_as_upper_limit")),
@@ -29,21 +26,23 @@ namespace fiatlux
   }
 
   //_________________________________________________________________________
-  double InelasticPhoton::evaluatephoton(const double &x, const double& q2)
+  double InelasticPhoton::evaluatephoton(const double &x, const double& q2) const
   {
-    _x = x; _q2 = q2;
-    const double eps_local = _eps_base * _eps_rel * pow(1.0-x, 4);
-    double res = integrate(0, log(1.0/x), eps_local) * _alpha_ref / M_PI / 2.0;
+    const double eps = _eps_base * pow(1.0-x, 4);
+    double res = integrate(0, log(1.0/x), eps, {x, q2, eps}) * _alpha_ref / M_PI / 2.0;
     return res;
   }
 
   //_________________________________________________________________________
-  double InelasticPhoton::integrand(double const& ln1oz) const
+  double InelasticPhoton::integrand(double const& ln1oz, const vector<double> &e) const
   {
-    double z = exp(-ln1oz);
-    double q2min = _x*_x * _mproton2 / (1 - z);
+    const double z = exp(-ln1oz);
+    const double x = e[0];
+    const double q2 = e[1];
+    const double eps = e[2];
 
-    double q2max = _q2;
+    double q2min = x*x * _mproton2 / (1.0 - z);
+    double q2max = q2;
     if (!_use_mu2_as_upper_limit)
       q2max /= 1.0 - z;
 
@@ -57,14 +56,41 @@ namespace fiatlux
         mult = -1;
       }
 
+    if (_q2_inel_split.size() < 2)
+      throw runtime_exception("InelasticPhoton::integrand", "inconsistent n_inel_split");
+
     double res = 0;
+    for (size_t i = 0; i < _q2_inel_split.size()-1; i++)
+      {
+        const double q2lo = max(q2min, _q2_inel_split[i]);
+        const double q2hi = min(q2max, _q2_inel_split[i+1]);
+        if (q2lo < q2hi)
+          res += _inelastic_q2.integrate(log(q2lo), log(q2hi), eps*_eps_rel, {x, z});
+      }
 
     return res*mult;
   }
 
   //_________________________________________________________________________
-  double InelasticQ2::integrand(const double &lnq2) const
+  void InelasticPhoton::insert_inel_split(const double &q2)
   {
-    return 0;
+    if (_q2_inel_split.size() > 20)
+      throw runtime_exception("InelasticPhoton::insert_inel_split", "no room to insert further inel split");
+    _q2_inel_split.push_back(q2);
+    std::sort(_q2_inel_split.begin(), _q2_inel_split.end());
+  }
+
+  //_________________________________________________________________________
+  double InelasticQ2::integrand(const double &lnq2, vector<double> const& e) const
+  {
+    const double x = e[0];
+    const double z = e[1];
+    const double q = exp(0.5*lnq2);
+    const double q2 = q*q;
+    const auto kin = compute_proton_structure(x, q2);
+
+    double res = -z*z * kin.FL + (2 - 2*z + z*z + (2 * x*x * _mproton2)/q2)* kin.F2;
+
+    return res;
   }
 }

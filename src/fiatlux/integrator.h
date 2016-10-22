@@ -7,8 +7,10 @@
 
 #include <functional>
 #include <array>
+#include <vector>
 using std::function;
 using std::array;
+using std::vector;
 
 namespace fiatlux
 {
@@ -30,9 +32,12 @@ namespace fiatlux
      * @param xmin the lower bound integration value.
      * @param xmax the upper bound integration value.
      * @param eps the required relative error.
+     * @param e optional extra parameters in a vector.
      * @return the integral value.
      */
-    double integrate(double const& xmin, double const& xmax, double const& eps = 1E-4) const;
+    double integrate(double const& xmin, double const& xmax,
+                     double const& eps = 1E-4,
+                     vector<double> const& e = {}) const;
 
   protected:
     /**
@@ -42,7 +47,7 @@ namespace fiatlux
      * @param extra an optional extra double
      * @return the integrand evaluated at x.
      */
-    virtual double integrand(double const& x) const = 0;
+    virtual double integrand(double const& x, vector<double> const& e) const = 0;
 
     /**
      * @brief The dgauss integrator from cernlib.
@@ -53,7 +58,7 @@ namespace fiatlux
      * @param extra optional parameter for 1D integrand which require extra information.
      * @return the integral from a to b.
      */
-    double dgauss(double const& a, double const& b, double const& eps) const;
+    double dgauss(double const& a, double const& b, double const& eps, vector<double> const& e) const;
 
   private:
     double _cst;         //!< param for dgauss

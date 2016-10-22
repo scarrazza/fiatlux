@@ -13,6 +13,7 @@ using std::string;
 using std::vector;
 
 #include <fiatlux/integrator.h>
+#include <fiatlux/proton.h>
 
 namespace fiatlux
 {
@@ -23,7 +24,7 @@ namespace fiatlux
    * This class provides the elastic piece of the photon
    * structre following the LUXqed description.
    */
-  class ElasticPhoton: Integrator
+  class ElasticPhoton: public Integrator, public ProtonStructure
   {
   public:
     /**
@@ -40,7 +41,7 @@ namespace fiatlux
      * @param x the momentum fraction.
      * @return the elastic integral for the photon PDF.
      */
-    double evaluatephoton(double const&x, double const& q2);
+    double evaluatephoton(double const&x, double const& q2) const;
 
     /**
      * @brief The elastic integrand.
@@ -48,7 +49,7 @@ namespace fiatlux
      * @param q2 the Q^2.
      * @return the elastic integrand.
      */
-    double integrand(double const& lnq2) const;
+    double integrand(double const& lnq2, vector<double> const& e) const;
 
     /**
      * @brief Computes the electric and magnetic form factors.
@@ -74,19 +75,12 @@ namespace fiatlux
     double elastic_dipole_factor(double const& q2) const;
 
   private:
-    double _mproton2;   //!< the square of the proton mass.
-    double _eps_base;   //!< precision on final integration of double integral.
-    double _eps_rel;    //!< extra precision on any single integration.
-    double _log_q2_max; //!< the maximum allowed Q2.
-    double _alpha_ref;  //!< the reference alpha.
-    double _mum_proton; //!< proton magnetic momentum.
     double _elastic_electric_rescale; //!< the ge rescale.
     double _elastic_magnetic_rescale; //!< the gm rescale.
-    double _x;
-    int _elastic_param;//! the elastic parametrization.
+    int    _elastic_param;            //!< the elastic parametrization.
 
-    vector<array<double, 3>> _fit; //!< the A1 fit container.
-    vector<array<double, 3>> _fit_uperr; //!< the upper bound fit error.
+    vector<array<double, 3>> _fit;         //!< the A1 fit container.
+    vector<array<double, 3>> _fit_uperr;   //!< the upper bound fit error.
     vector<array<double, 3>> _fit_downerr; //!< the down bound fit error.
   };
 }

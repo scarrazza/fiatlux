@@ -19,16 +19,9 @@ namespace fiatlux
 {
   //_________________________________________________________________________
   ElasticPhoton::ElasticPhoton():
-    Integrator{},
-    _mproton2(pow(input().get<double>("mproton"), 2)),
-    _eps_base(input().get<double>("eps_base")),
-    _eps_rel(input().get<double>("eps_rel")),
-    _log_q2_max(log(input().get<double>("q2_max"))),
-    _alpha_ref(input().get<double>("alpha_ref")),
-    _mum_proton(input().get<double>("mum_proton")),
+    Integrator{}, ProtonStructure{},
     _elastic_electric_rescale(input().get<double>("elastic_electric_rescale")),
     _elastic_magnetic_rescale(input().get<double>("elastic_magnetic_rescale")),
-    _x(0),
     _elastic_param(input().get<int>("elastic_param"))
   {
     if (_elastic_param != elastic_dipole)
@@ -81,22 +74,22 @@ namespace fiatlux
   }
 
   //_________________________________________________________________________
-  double ElasticPhoton::evaluatephoton(const double &x, const double &q2)
+  double ElasticPhoton::evaluatephoton(const double &x, const double &q2) const
   {
     double res = 0;
     if (x != 1.0)
       {
-        _x = x;
         const double eps_local = _eps_base * _eps_rel * pow(1.0-x, 4);
         const double q2min = x*x*_mproton2/(1.0-x);
-        res = integrate(log(q2min), _log_q2_max, eps_local) * _alpha_ref / M_PI / 2.0;
+        res = integrate(log(q2min), _log_q2_max, eps_local, {x}) * _alpha_ref / M_PI / 2.0;
       }
     return res;
   }
 
   //_________________________________________________________________________
-  double ElasticPhoton::integrand(double const& lnq2) const
+  double ElasticPhoton::integrand(double const& lnq2, const vector<double> &e) const
   {
+    const double x = e[0];
     const double q2 = exp(lnq2);
     const array<double,2> ge_gm = elastic_ge_gm(q2);
     const double tau = q2/(4*_mproton2);
@@ -106,7 +99,7 @@ namespace fiatlux
     const double FL = ge2/tau; // eq. (7b) 1607.04266
 
     // eq. (6) 1607.04266
-    double res = (2 - 2*_x + _x*_x*(1.0 + 0.5/tau))*F2 - _x*_x * FL;
+    double res = (2 - 2*x + x*x*(1.0 + 0.5/tau))*F2 - x*x * FL;
 
     return res;
   }

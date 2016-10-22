@@ -25,6 +25,7 @@ use_mu2_as_upper_limit: off
 
 q2min_inel_override: 0.0
 q2max_inel_override: 1E300
+lhapdf_transition_q2: -1
 
 # TEMPORARY
 q2: 2
