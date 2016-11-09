@@ -52,5 +52,5 @@ namespace fiatlux {
     tmp = *y;
     *y = *x;
     *x = tmp;
-  }
+  }  
 }

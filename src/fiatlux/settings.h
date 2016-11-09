@@ -16,6 +16,7 @@ namespace fiatlux
    * @brief The eparam enum
    */
   enum {elastic_dipole, elastic_A1_world_spline, elastic_A1_world_pol_spline};
+  enum {inelastic_Hermes_ALLM_CLAS, inelastic_LHAPDF};
 
   /**
    * @brief The Settings class.
@@ -35,13 +36,28 @@ namespace fiatlux
     void load(string const& filename);
 
     /**
-     *
+     * @brief get
+     * @param key
+     * @return
      */
-    template<class T> T get(string const& key)
+    template<class T>
+    T get(string const& key)
     {
       T result = _config[key].as<T>();
       return result;
     }
+
+    /**
+     * @brief get_elastic_param
+     * @return
+     */
+    int get_elastic_param();
+
+    /**
+     * @brief get_inelastic_param
+     * @return
+     */
+    int get_inelastic_param();
 
     /**
      * @brief print

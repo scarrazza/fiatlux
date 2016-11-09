@@ -14,6 +14,7 @@ using std::unique_ptr;
 
 #include <fiatlux/elastic.h>
 #include <fiatlux/inelastic.h>
+#include <fiatlux/msbar.h>
 
 namespace fiatlux
 {
@@ -73,5 +74,6 @@ namespace fiatlux
     xfxq _xfxq; //!< the function which holds the QCD parton information.
     unique_ptr<ElasticPhoton> _elastic; //!< the integrator for the elastic component.
     unique_ptr<InelasticPhoton> _inelastic; //!< the integrator for the inelastic component.
+    unique_ptr<MSbarPhoton> _msbar; //!< the integrator for the msbar component.
   };
 }

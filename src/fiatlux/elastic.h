@@ -41,7 +41,7 @@ namespace fiatlux
      * @param x the momentum fraction.
      * @return the elastic integral for the photon PDF.
      */
-    double evaluatephoton(double const&x, double const& q2) const;
+    double evaluatephoton(double const&x) const;
 
     /**
      * @brief The elastic integrand.

@@ -87,7 +87,7 @@ namespace fiatlux
     const double z = e[1];
     const double q = exp(0.5*lnq2);
     const double q2 = q*q;
-    const auto kin = compute_proton_structure(x, q2);
+    const auto kin = compute_proton_structure(x/z, q2);
 
     double res = -z*z * kin.FL + (2 - 2*z + z*z + (2 * x*x * _mproton2)/q2)* kin.F2;
 

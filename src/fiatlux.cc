@@ -17,6 +17,7 @@ namespace fiatlux
     input().load(filename);
     _elastic = unique_ptr<ElasticPhoton>(new ElasticPhoton{});
     _inelastic = unique_ptr<InelasticPhoton>(new InelasticPhoton{});
+    _msbar = unique_ptr<MSbarPhoton>(new MSbarPhoton{});
     _inelastic->insert_inel_split(-2);
 
     const double lhtrq2 = input().get<double>("lhapdf_transition_q2");
@@ -41,9 +42,9 @@ namespace fiatlux
   luxqed FiatLux::evaluatephoton(const double &x, const double &q2) const
   {
     luxqed e;
-    e.elastic = _elastic->evaluatephoton(x, q2);
+    e.elastic = _elastic->evaluatephoton(x);
     e.inelastic_pf = _inelastic->evaluatephoton(x, q2);
-    e.msbar_pf = 0;
+    e.msbar_pf = _msbar->evaluatephoton(x, q2);
     e.total = e.elastic + e.inelastic_pf + e.msbar_pf;
     return e;
   }

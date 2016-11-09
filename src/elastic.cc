@@ -22,7 +22,7 @@ namespace fiatlux
     Integrator{}, ProtonStructure{},
     _elastic_electric_rescale(input().get<double>("elastic_electric_rescale")),
     _elastic_magnetic_rescale(input().get<double>("elastic_magnetic_rescale")),
-    _elastic_param(input().get<int>("elastic_param"))
+    _elastic_param(input().get_elastic_param())
   {
     if (_elastic_param != elastic_dipole)
       {
@@ -74,7 +74,7 @@ namespace fiatlux
   }
 
   //_________________________________________________________________________
-  double ElasticPhoton::evaluatephoton(const double &x, const double &q2) const
+  double ElasticPhoton::evaluatephoton(const double &x) const
   {
     double res = 0;
     if (x != 1.0)
