@@ -48,7 +48,7 @@ namespace fiatlux
      * @param q2 the energy scale.
      * @return the inelastic integral for the photon PDF.
      */
-    double evaluatephoton(double const&x, double const& q2) const;
+    double evaluatephoton(double const&x, double const& mu2) const;
 
     /**
      * @brief The inelastic integrand.
@@ -73,6 +73,12 @@ namespace fiatlux
      * @return the constant referece to the vector containing the splits.
      */
     const vector<double>& get_q2_inel_split() const { return _q2_inel_split; }
+
+    /**
+     * @brief set_alpha_running
+     * @param a
+     */
+    void set_alpha_running(const alpha_running &a) { _inelastic_q2.set_alpha_running(a); ProtonStructure::set_alpha_running(a); }
 
   private:
     double _q2min_inel_override;  //!< override value for the q2min

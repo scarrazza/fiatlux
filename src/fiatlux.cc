@@ -11,8 +11,7 @@
 namespace fiatlux
 {
   //_________________________________________________________________________
-  FiatLux::FiatLux(const string &filename, xfxq const& f):
-    _xfxq(f)
+  FiatLux::FiatLux(const string &filename)
   {
     input().load(filename);
     _elastic = unique_ptr<ElasticPhoton>(new ElasticPhoton{});
@@ -33,18 +32,23 @@ namespace fiatlux
           ss << i <<  " ";
         info("InelasticPhoton::insert_inel_split", ss.str());
       }
-
-    if (input().get<bool>("qed_running"))
-      throw runtime_exception("FiatLux:FiatLux", "QED running activated");
   }
 
   //_________________________________________________________________________
-  luxqed FiatLux::evaluatephoton(const double &x, const double &q2) const
+  void FiatLux::plug_alphaqed(alpha_running const& a) const
+  {
+    _elastic->set_alpha_running(a);
+    _inelastic->set_alpha_running(a);
+    _msbar->set_alpha_running(a);
+  }
+
+  //_________________________________________________________________________
+  luxqed FiatLux::evaluatephoton(const double &x, const double &mu2) const
   {
     luxqed e;
-    e.elastic = _elastic->evaluatephoton(x);
-    e.inelastic_pf = _inelastic->evaluatephoton(x, q2);
-    e.msbar_pf = _msbar->evaluatephoton(x, q2);
+    e.elastic = _elastic->evaluatephoton(x, mu2);
+    e.inelastic_pf = _inelastic->evaluatephoton(x, mu2);
+    e.msbar_pf = _msbar->evaluatephoton(x, mu2);
     e.total = e.elastic + e.inelastic_pf + e.msbar_pf;
     return e;
   }

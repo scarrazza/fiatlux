@@ -5,27 +5,18 @@
 
 #pragma once
 
-#include <functional>
 #include <string>
 #include <memory>
-using std::function;
 using std::string;
 using std::unique_ptr;
 
 #include <fiatlux/elastic.h>
 #include <fiatlux/inelastic.h>
 #include <fiatlux/msbar.h>
+#include <fiatlux/proton.h>
 
 namespace fiatlux
-{
-  /**
-   * @brief Typename for parton input.
-   *
-   * The prototype function should return x*f(fl,x,Q)
-   * where fl is PDG id code (integer), x and Q double precision.
-   */
-  using xfxq = function<double(int,double,double)>;
-
+{  
   /**
    * @brief The luxqed struct which holds the 3 components.
    * elastic, inelastic, msbar-pf and the total.
@@ -53,7 +44,13 @@ namespace fiatlux
      * Takes a PDF provider which returns x*f(fl,x,Q).
      * @param f a std::function object following the \c xfxq definition.
      */
-    FiatLux(string const& filename, xfxq const&f);
+    FiatLux(string const& filename);
+
+    /**
+     * @brief Set the external function which returns alphaQED running.
+     * @param a the function for alpha running.
+     */
+    void plug_alphaqed(alpha_running const& a) const;
 
     /**
      * @brief Evaluates the photon PDF for a given x and Q2.
@@ -65,13 +62,12 @@ namespace fiatlux
      * @param q2 the energy scale.
      * @return a luxqed structure with all integral pieces and the total sum.
      */
-    luxqed evaluatephoton(double const&x, double const& q2) const;
+    luxqed evaluatephoton(double const&x, double const& mu2) const;
 
   protected:
     void load_settings(string const& filename) const;
 
   private:
-    xfxq _xfxq; //!< the function which holds the QCD parton information.
     unique_ptr<ElasticPhoton> _elastic; //!< the integrator for the elastic component.
     unique_ptr<InelasticPhoton> _inelastic; //!< the integrator for the inelastic component.
     unique_ptr<MSbarPhoton> _msbar; //!< the integrator for the msbar component.

@@ -18,11 +18,15 @@ namespace fiatlux
   }
 
   //_________________________________________________________________________
-  double MSbarPhoton::evaluatephoton(const double &x, const double &q2) const
+  double MSbarPhoton::evaluatephoton(const double &x, const double &mu2) const
   {
     double res = 0;
     const double eps_local = _eps_base * _eps_rel * pow(1.0-x, 4);
-    res = integrate(0, log(1.0/x), eps_local, {x,q2}) * _alpha_ref / M_PI / 2.0;
+    res = integrate(0, log(1.0/x), eps_local, {x,mu2}) * _alpha_ref / M_PI / 2.0;
+
+    if (_qed_running)
+      res *= _alpha_running(sqrt(mu2))/_alpha_ref;
+
     return res;
   }
 

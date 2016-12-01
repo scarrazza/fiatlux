@@ -26,11 +26,15 @@ namespace fiatlux
   }
 
   //_________________________________________________________________________
-  double InelasticPhoton::evaluatephoton(const double &x, const double& q2) const
+  double InelasticPhoton::evaluatephoton(const double &x, const double& mu2) const
   {
     const double eps = _eps_base * pow(1.0-x, 4);
-    double res = integrate(0, log(1.0/x), eps, {x, q2, eps}) * _alpha_ref / M_PI / 2.0;
-    return res;
+    double res = integrate(0, log(1.0/x), eps, {x, mu2, eps}) * _alpha_ref / M_PI / 2.0;
+
+    if (_qed_running)
+      res *= _alpha_ref/_alpha_running(sqrt(mu2));
+
+    return res;    
   }
 
   //_________________________________________________________________________
@@ -90,6 +94,9 @@ namespace fiatlux
     const auto kin = compute_proton_structure(x/z, q2);
 
     double res = -z*z * kin.FL + (2 - 2*z + z*z + (2 * x*x * _mproton2)/q2)* kin.F2;
+
+    if (_qed_running)
+      res *= pow(_alpha_running(q)/_alpha_ref, 2);
 
     return res;
   }

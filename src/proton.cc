@@ -17,6 +17,7 @@ namespace fiatlux
 {
   //_________________________________________________________________________
   ProtonStructure::ProtonStructure():
+    _qed_running(input().get<bool>("qed_running")),
     _mproton2(pow(input().get<double>("mproton"), 2)),
     _mum_proton(input().get<double>("mum_proton")),
     _eps_base(input().get<double>("eps_base")),
@@ -85,7 +86,7 @@ namespace fiatlux
     rescaler(rvalue, sf.q2);
 
     double sigmaTL = 0;
-    const double W2 = sf.w2, HAC_loW2 = 3.0, HAC_hiW2 = 4.0, alpha = 1/137.;
+    const double W2 = sf.w2, HAC_loW2 = 3.0, HAC_hiW2 = 4.0, alpha = _alpha_ref;
     if (W2 > HAC_hiW2)
       {
         // get ALLM

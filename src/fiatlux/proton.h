@@ -5,8 +5,17 @@
 
 #pragma once
 
+#include <iostream>
+#include <functional>
+using std::function;
+
 namespace fiatlux
 {
+  /**
+   * @brief Typename for alpha running
+   */
+  using alpha_running = function<double(double const&)>;
+
   /**
    * @brief A simple container for the output results
    */
@@ -60,6 +69,12 @@ namespace fiatlux
      */
     void rescaler(double &rvalue, double const& q2) const;
 
+    /**
+     * @brief Set the function for the alpha running
+     * @param a the alpha function
+     */
+    void set_alpha_running(alpha_running const& a) { _alpha_running = a; }
+
   private:
     void Hermes_ALLM_CLAS(StrucFunc & sf) const;
 
@@ -106,6 +121,8 @@ namespace fiatlux
     double sigmaTL_from_F2(double const& alpha, double const& x, double const& q2, double const& F2) const;
 
   protected:
+    alpha_running _alpha_running; //!< the alpha running function
+    const bool _qed_running;  //!< switch qed alpha running
     const double _mproton2;   //!< the proton mass^2
     const double _mum_proton; //!< proton magnetic momentum.
     const double _eps_base;   //!< precision on final integration of double integral.

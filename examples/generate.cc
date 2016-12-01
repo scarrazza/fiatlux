@@ -4,48 +4,71 @@
 // Authors: Stefano Carrazza: stefano.carrazza@cern.ch
 
 #include <iostream>
-#include <vector>
-using namespace std;
-
+#include <iomanip>
+#include <cmath>
 #include <fiatlux/fiatlux.h>
 #include <fiatlux/settings.h>
+#include <APFEL/APFEL.h>
+using namespace std;
 using namespace fiatlux;
-using namespace std::placeholders;
-
-#include <LHAPDF/LHAPDF.h>
-using namespace LHAPDF;
-double (PDF::*fn)(int, double, double) const = &PDF::xfxQ; // extracting LHAPDF methods
 
 double y_of_zeta(double const& y, double const& a)
 {
   return y + a*(1.0-exp(-y));
 }
 
+extern "C" double __hoppet_MOD_initialize(double const&,double const&, double const&);
+extern "C" double __hoppet_MOD_alphaqed(double const&);
+
 int main()
 {
-  //PDF *pdf = mkPDF("PDF4LHC15_nnlo_100", 0);
-  FiatLux lux{"examples/runcard.yml",NULL};
+  FiatLux lux{"examples/runcard.yml"};
 
-  vector<double> q2= {input().get<double>("q2")};
+  bool apfel = input().get<bool>("apfel");
 
+  const double mcharm = 1.5, mbottom = 4.5, mtop = 173.0;
+  if (apfel)
+    {
+      cout << "Using APFEL" << endl;
+      APFEL::SetPerturbativeOrder(1);
+      APFEL::SetTheory("QUniD");
+      APFEL::EnableNLOQEDCorrections(1);
+      APFEL::SetMSbarMasses(mcharm, mbottom, mtop);
+      APFEL::SetAlphaQEDRef(1/137.035999074, 0.000510998946);
+      APFEL::InitializeAPFEL();
+      lux.plug_alphaqed(APFEL::AlphaQED);
+    }
+  else
+    {
+      cout << "Using HOPPET" << endl;
+      __hoppet_MOD_initialize(mcharm, mbottom, mtop);
+      lux.plug_alphaqed(__hoppet_MOD_alphaqed);
+    }
+
+  /*
+  __hoppet_MOD_initialize(mcharm, mbottom, mtop);
+  cout << APFEL::AlphaQED(0.000510998946) << " " << __hoppet_MOD_alphaqed(0.000510998946) << endl;
+  cout << APFEL::AlphaQED(1.777) << " " << __hoppet_MOD_alphaqed(1.777) << endl;
+  cout << APFEL::AlphaQED(81.9) << " " << __hoppet_MOD_alphaqed(81.9) << endl;
+  */
+
+  // print results
+  double q2 = 2;
   cout << setprecision(15) << scientific;
+  for (auto i = 1; i <= 100; i++)
+    {
+      const auto y = y_of_zeta(i*0.1, 0);
+      const auto x = exp(-y);
 
-  //cout << "Columns: x Q2 elastic inelastic_PF MSbar-PF total" << endl;
-  for (auto const& iq2: q2)
-    for (auto i = 1; i <= 100; i++)
-      {
-        const auto y = y_of_zeta(i*0.1, 0);
-        const auto x = exp(-y);
-
-        const auto pht = lux.evaluatephoton(x,iq2);
-        cout << x << "\t"
-             << iq2 << "\t"
-             << pht.elastic << "\t"
-             << pht.inelastic_pf << "\t"
-             << pht.msbar_pf << "\t"
-             << pht.total << "\t"
-             << endl;
-      }
+      const auto pht = lux.evaluatephoton(x,q2);
+      cout << x << "\t"
+           << q2 << "\t"
+           << pht.elastic << "\t"
+           << pht.inelastic_pf << "\t"
+           << pht.msbar_pf << "\t"
+           << pht.total << "\t"
+           << endl;
+    }
 
   return 0;
 }

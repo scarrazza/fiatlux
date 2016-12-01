@@ -74,7 +74,7 @@ namespace fiatlux
   }
 
   //_________________________________________________________________________
-  double ElasticPhoton::evaluatephoton(const double &x) const
+  double ElasticPhoton::evaluatephoton(const double &x, const double& mu2) const
   {
     double res = 0;
     if (x != 1.0)
@@ -83,6 +83,10 @@ namespace fiatlux
         const double q2min = x*x*_mproton2/(1.0-x);
         res = integrate(log(q2min), _log_q2_max, eps_local, {x}) * _alpha_ref / M_PI / 2.0;
       }
+
+    if (_qed_running)
+      res *= _alpha_ref/_alpha_running(sqrt(mu2));
+
     return res;
   }
 
@@ -100,6 +104,9 @@ namespace fiatlux
 
     // eq. (6) 1607.04266
     double res = (2 - 2*x + x*x*(1.0 + 0.5/tau))*F2 - x*x * FL;
+
+    if (_qed_running)
+      res *= pow(_alpha_running(sqrt(q2))/_alpha_ref, 2);
 
     return res;
   }
