@@ -30,7 +30,9 @@ namespace fiatlux
     _allm_limits(input().get<double>("allm_limits")),
     _rescale_non_resonance(input().get<double>("rescale_non_resonance")),
     _rescale_resonance(input().get<double>("rescale_resonance")),
-    _inelastic_param(input().get_inelastic_param()) 
+    _HAC_loW2(3.0),
+    _HAC_hiW2(4.0),
+    _inelastic_param(input().get_inelastic_param())
   {
   }
 
@@ -51,7 +53,7 @@ namespace fiatlux
   {
     double rescale;
     if ((q2 > _lhapdf_transition_q2 && _lhapdf_transition_q2 >= 0) ||
-        _inelastic_param == inelastic_LHAPDF)
+        _inelastic_param == inelastic_LHAPDF_Hermes_ALLM_CLAS)
        rescale = (1 + _rescale_r_twist4/q2);
     else
        rescale = _rescale_r;
@@ -72,7 +74,9 @@ namespace fiatlux
       case inelastic_Hermes_ALLM_CLAS:
         Hermes_ALLM_CLAS(sf);
         break;
-
+      case inelastic_LHAPDF_Hermes_ALLM_CLAS:
+        LHAPDF_Hermes_ALLM_CLAS(sf);
+        break;
       default:
         throw runtime_exception("ProtonStructure::compute_proton_structure", "Unrecognised inelastic_param");
       }
@@ -86,28 +90,27 @@ namespace fiatlux
     rescaler(rvalue, sf.q2);
 
     double sigmaTL = 0;
-    const double W2 = sf.w2, HAC_loW2 = 3.0, HAC_hiW2 = 4.0, alpha = _alpha_ref;
-    if (W2 > HAC_hiW2)
+    if (sf.w2 > _HAC_hiW2)
       {
-        // get ALLM
-        sigmaTL = allm_sigma(alpha, sf.x, sf.q2, sf.w2);
+        // get Hermes ALLM
+        sigmaTL = allm_sigma(sf.x, sf.q2, sf.w2);
         sigmaTL *= _rescale_non_resonance;
        }
-    else if (W2 < HAC_loW2)
+    else if (sf.w2 < _HAC_loW2)
       {
         // get CLAS
         double F2;
         f2sf_(1,sf.q2,sf.x,F2);
         F2 *= _rescale_resonance;
-        sigmaTL = sigmaTL_from_F2(alpha, sf.x, sf.q2, F2);
+        sigmaTL = sigmaTL_from_F2(sf.x, sf.q2, F2);
       }
     else
       {        
         double F2_hiW, F2_loW;
         // get ALLM                
 
-        sigmaTL = allm_sigma(alpha, sf.x, sf.q2, sf.w2);
-        F2_hiW = F2_from_sigmaTL(alpha, sf.x, sf.q2, sigmaTL);
+        sigmaTL = allm_sigma(sf.x, sf.q2, sf.w2);
+        F2_hiW = F2_from_sigmaTL(sf.x, sf.q2, sigmaTL);
         F2_hiW *= _rescale_non_resonance;
 
         // get CLAS
@@ -115,7 +118,7 @@ namespace fiatlux
         F2_loW *= _rescale_resonance;
 
         // then interpolate between them
-        const double u = (W2 - HAC_loW2)/(HAC_hiW2 - HAC_loW2);
+        const double u = (sf.w2 - _HAC_loW2)/(_HAC_hiW2 - _HAC_loW2);
 
         // a function that has zero derivative at u = 0, 1
         // and is respectively 0 and 1 there
@@ -123,12 +126,28 @@ namespace fiatlux
         const double wgt_loW = 1.0 - wgt_hiW;
         const double F2 = F2_hiW * wgt_hiW + F2_loW * wgt_loW;
 
-        sigmaTL = sigmaTL_from_F2(alpha, sf.x, sf.q2, F2);
+        sigmaTL = sigmaTL_from_F2(sf.x, sf.q2, F2);
       }
 
     // fill F2 and FL
-    sf.F2 = F2_from_sigmaTL(alpha, sf.x, sf.q2, sigmaTL);
+    sf.F2 = F2_from_sigmaTL(sf.x, sf.q2, sigmaTL);
     sf.FL = FL_from_F2R(sf.x, sf.q2, sf.F2, rvalue);
+  }
+
+  //_________________________________________________________________________
+  void ProtonStructure::LHAPDF_Hermes_ALLM_CLAS(StrucFunc & sf) const
+  {
+    if (sf.w2 > _HAC_hiW2 && sf.q2 > _lhapdf_transition_q2)
+      {
+        double rvalue = 1;
+        rescaler(rvalue, sf.q2);
+        const double q = sqrt(sf.q2);
+        // call external functions
+        sf.F2 = _f2(sf.x, q)*_rescale_non_resonance;
+        sf.FL = rvalue*_fl(sf.x, q)*_rescale_non_resonance;
+      }
+    else
+       Hermes_ALLM_CLAS(sf);
   }
 
   //_________________________________________________________________________
@@ -167,21 +186,20 @@ namespace fiatlux
   }
 
   //_________________________________________________________________________
-  double ProtonStructure::allm_sigma(double const& alpha, double const& x,
-                                     double const& q2, double const& w2) const
+  double ProtonStructure::allm_sigma(double const& x, double const& q2, double const& w2) const
   {
     const double hbarc2 = 389.379323;
     double sigmatot, F2, dsigmatot, dF2;
     gd_fit_11_(x,q2,w2,"p",sigmatot,F2,dsigmatot,dF2);
     double sigma = sigmatot + _allm_limits*dsigmatot;
-    sigma = sigma/hbarc2 * alpha/_alpha_ref;
+    sigma = sigma/hbarc2 * _alpha_ref/_alpha_ref;
     return sigma;
   }
 
   //_________________________________________________________________________
-  double ProtonStructure::F2_from_sigmaTL(double const& alpha, double const& x, double const& q2, double const& sigmaTL) const
+  double ProtonStructure::F2_from_sigmaTL(double const& x, double const& q2, double const& sigmaTL) const
   {
-    return 1.0/(4*pow(M_PI,2)*alpha)*q2*(1.0-x)/(1.0+4*pow(x,2)*_mproton2/q2)*sigmaTL;
+    return 1.0/(4*pow(M_PI,2)*_alpha_ref)*q2*(1.0-x)/(1.0+4*pow(x,2)*_mproton2/q2)*sigmaTL;
   }
 
   //_________________________________________________________________________
@@ -191,11 +209,20 @@ namespace fiatlux
   }
 
   //_________________________________________________________________________
-  double ProtonStructure::sigmaTL_from_F2(double const& alpha, double const& x, double const& q2, double const& F2) const
+  double ProtonStructure::sigmaTL_from_F2(double const& x, double const& q2, double const& F2) const
   {
     double sigmaTL = 0;
     if (F2 != 0)
-      sigmaTL = (4*pow(M_PI,2)*alpha)*(1+4*pow(x,2)*_mproton2/q2)/(q2*(1.0-x))*F2;
+      sigmaTL = (4*pow(M_PI,2)*_alpha_ref)*(1+4*pow(x,2)*_mproton2/q2)/(q2*(1.0-x))*F2;
     return sigmaTL;
   }
+
+  //_________________________________________________________________________
+  double ProtonStructure::R_from_F2FL(double const& x, double const& q2, double const& F2, double const& FL) const
+  {
+    const double scaledf2 = F2*(1+4*_mproton2*pow(x,2)/q2);
+    return FL/(scaledf2-FL);
+  }
+
+
 }

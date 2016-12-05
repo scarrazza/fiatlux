@@ -48,6 +48,8 @@ namespace fiatlux
     const string eopt = get<string>("inelastic_param");
     if ( eopt.compare("Hermes_ALLM_CLAS") == 0)
       return inelastic_Hermes_ALLM_CLAS;
+    else if (eopt.compare("LHAPDF_Hermes_ALLM_CLAS") == 0)
+      return inelastic_LHAPDF_Hermes_ALLM_CLAS;
     else
       throw runtime_exception("Settings::get_inelastic_param", "option not recognised");
   }

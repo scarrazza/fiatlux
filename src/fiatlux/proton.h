@@ -15,6 +15,7 @@ namespace fiatlux
    * @brief Typename for alpha running
    */
   using alpha_running = function<double(double const&)>;
+  using ext_sf = function<double(double const&, double const&)>;
 
   /**
    * @brief A simple container for the output results
@@ -75,8 +76,25 @@ namespace fiatlux
      */
     void set_alpha_running(alpha_running const& a) { _alpha_running = a; }
 
+    /**
+     * @brief Set the structure functions for the F2(x,Q) and FL(x,Q)
+     * @param f2 the F2(x,Q) structure function
+     * @param fl the FL(x,Q) structure function
+     */
+    void set_sf(ext_sf const& f2, ext_sf const& fl) { _f2 = f2; _fl = fl; }
+
   private:
+    /**
+     * @brief Computes the structure functions using the Hermes_ALLM_CLAS model at low energy.
+     * @param sf the structure function struct which will be filled by the code.
+     */
     void Hermes_ALLM_CLAS(StrucFunc & sf) const;
+
+    /**
+     * @brief Computes the structure functions using the Hermes_ALLM_CLAS model + PDFs from LHAPDF for high scales.
+     * @param sf the structure function struct which will be filled by the code.
+     */
+    void LHAPDF_Hermes_ALLM_CLAS(StrucFunc & sf) const;
 
     /**
      * @brief Protected version of R1998 where Q2 is checked before computing.
@@ -103,12 +121,12 @@ namespace fiatlux
     /**
      * @brief Computes sigmaTL in GeV^-2
      */
-    double allm_sigma(const double &alpha, double const& x, double const& q2, const double &w2) const;
+    double allm_sigma(double const& x, double const& q2, const double &w2) const;
 
     /**
      * @brief Computes F2 from sigmaTL
      */
-    double F2_from_sigmaTL(double const& alpha, double const& x, double const& q2, double const& sigmaTL) const;
+    double F2_from_sigmaTL(double const& x, double const& q2, double const& sigmaTL) const;
 
     /**
      * @brief Computes FL from F2 and R
@@ -118,10 +136,17 @@ namespace fiatlux
     /**
      * @brief Computes sigmaTL from F2
      */
-    double sigmaTL_from_F2(double const& alpha, double const& x, double const& q2, double const& F2) const;
+    double sigmaTL_from_F2(double const& x, double const& q2, double const& F2) const;
+
+    /**
+     * @brief Computes R for a given F2 and FL.
+     */
+    double R_from_F2FL(double const& x, double const& q2, double const& F2, double const& FL) const;
 
   protected:
     alpha_running _alpha_running; //!< the alpha running function
+    ext_sf _f2; //!< the external F2 function for Q2 > transition
+    ext_sf _fl; //!< the external FL function for Q2 > transition
     const bool _qed_running;  //!< switch qed alpha running
     const double _mproton2;   //!< the proton mass^2
     const double _mum_proton; //!< proton magnetic momentum.
@@ -135,6 +160,8 @@ namespace fiatlux
     const double _allm_limits;
     const double _rescale_non_resonance;
     const double _rescale_resonance;
-    int _inelastic_param;     //!< the inelastic parametrization    
+    const double _HAC_loW2; //!< low W2 CLAS F2
+    const double _HAC_hiW2; //!< high W2 Hermes ALLM sigmaTL
+    int _inelastic_param;   //!< the inelastic parametrization
   };
 }

@@ -80,6 +80,13 @@ namespace fiatlux
      */
     void set_alpha_running(const alpha_running &a) { _inelastic_q2.set_alpha_running(a); ProtonStructure::set_alpha_running(a); }
 
+    /**
+     * @brief set_sf
+     * @param f2
+     * @param fl
+     */
+    void set_sf(ext_sf const& f2, ext_sf const& fl) { _inelastic_q2.set_sf(f2,fl); ProtonStructure::set_sf(f2,fl); }
+
   private:
     double _q2min_inel_override;  //!< override value for the q2min
     double _q2max_inel_override;  //!< override value for the q2max

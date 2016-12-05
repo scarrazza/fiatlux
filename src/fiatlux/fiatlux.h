@@ -53,6 +53,19 @@ namespace fiatlux
     void plug_alphaqed(alpha_running const& a) const;
 
     /**
+     * @brief Set the external function which returns F2(x,Q) and FL(x,Q).
+     * @param f2 the F2(x,Q) structure function.
+     * @param fl the FL(x,Q) structure function.
+     */
+    void plug_f2_fl(ext_sf const& f2, ext_sf const& fl) const;
+
+    /**
+     * @brief insert_inel_split
+     * @param thresholds
+     */
+    void insert_inel_split(vector<double> const& qthresholds) const;
+
+    /**
      * @brief Evaluates the photon PDF for a given x and Q2.
      *
      * This method computes the 3 components, elastic, inelastic-pf and msbar-pf

@@ -18,7 +18,7 @@ elastic_magnetic_rescale: 1
 
 # the inelastic param type, options:
 # Hermes_ALLM_CLAS
-inelastic_param: Hermes_ALLM_CLAS
+inelastic_param: LHAPDF_Hermes_ALLM_CLAS
 rescale_r_twist4: 0
 rescale_r: 1
 allm_limits: 0
@@ -36,8 +36,7 @@ mum_proton: 2.792847356
 use_mu2_as_upper_limit: off
 q2min_inel_override: 0.0
 q2max_inel_override: 1E300
-lhapdf_transition_q2: -1
+lhapdf_transition_q2: 9
 
 # TEMPORARY
-q2: 2
-verbose: off
+verbose: on

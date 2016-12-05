@@ -16,7 +16,7 @@ namespace fiatlux
    * @brief The eparam enum
    */
   enum {elastic_dipole, elastic_A1_world_spline, elastic_A1_world_pol_spline};
-  enum {inelastic_Hermes_ALLM_CLAS, inelastic_LHAPDF};
+  enum {inelastic_Hermes_ALLM_CLAS, inelastic_LHAPDF_Hermes_ALLM_CLAS};
 
   /**
    * @brief The Settings class.

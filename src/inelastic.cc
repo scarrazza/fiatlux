@@ -82,6 +82,15 @@ namespace fiatlux
       throw runtime_exception("InelasticPhoton::insert_inel_split", "no room to insert further inel split");
     _q2_inel_split.push_back(q2);
     std::sort(_q2_inel_split.begin(), _q2_inel_split.end());
+
+    if (input().get<bool>("verbose"))
+      {
+        info("InelasticPhoton::insert_inel_split","q2_inel_split:");
+        stringstream ss("");
+        for (const auto &i: _q2_inel_split)
+          ss << i <<  " ";
+        info("InelasticPhoton::insert_inel_split", ss.str());
+      }
   }
 
   //_________________________________________________________________________

@@ -17,8 +17,13 @@ double y_of_zeta(double const& y, double const& a)
   return y + a*(1.0-exp(-y));
 }
 
+// hoppet related stuff
 extern "C" double __hoppet_MOD_initialize(double const&,double const&, double const&);
 extern "C" double __hoppet_MOD_alphaqed(double const&);
+extern "C" double __hoppet_MOD_f2(double const&, double const&);
+extern "C" double __hoppet_MOD_fl(double const&, double const&);
+extern "C" double __hoppet_MOD_masses(int const&);
+
 
 int main()
 {
@@ -32,7 +37,7 @@ int main()
       cout << "Using APFEL" << endl;
       APFEL::SetPerturbativeOrder(1);
       APFEL::SetTheory("QUniD");
-      APFEL::EnableNLOQEDCorrections(1);
+      APFEL::EnableNLOQEDCorrections(true);
       APFEL::SetMSbarMasses(mcharm, mbottom, mtop);
       APFEL::SetAlphaQEDRef(1/137.035999074, 0.000510998946);
       APFEL::InitializeAPFEL();
@@ -43,13 +48,15 @@ int main()
       cout << "Using HOPPET" << endl;
       __hoppet_MOD_initialize(mcharm, mbottom, mtop);
       lux.plug_alphaqed(__hoppet_MOD_alphaqed);
+      lux.plug_f2_fl(__hoppet_MOD_f2, __hoppet_MOD_fl);                       
+      lux.insert_inel_split({__hoppet_MOD_masses(5),__hoppet_MOD_masses(6)});
     }
 
   /*
   __hoppet_MOD_initialize(mcharm, mbottom, mtop);
   cout << APFEL::AlphaQED(0.000510998946) << " " << __hoppet_MOD_alphaqed(0.000510998946) << endl;
   cout << APFEL::AlphaQED(1.777) << " " << __hoppet_MOD_alphaqed(1.777) << endl;
-  cout << APFEL::AlphaQED(81.9) << " " << __hoppet_MOD_alphaqed(81.9) << endl;
+  cout << APFEL::AlphaQED(81.9) << " " << __hoppet_MOD_alphaqed(81.9) << endl;  
   */
 
   // print results
