@@ -62,7 +62,7 @@ int main()
   // print results
   double q2 = 100;
   cout << setprecision(15) << scientific;
-  for (auto i = 1; i <= 2; i++)
+  for (auto i = 1; i <= 100; i++)
     {
       const auto y = y_of_zeta(i*0.1, 0);
       const auto x = exp(-y);
