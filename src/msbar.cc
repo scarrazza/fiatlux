@@ -11,8 +11,9 @@
 namespace fiatlux
 {
   //_________________________________________________________________________
-  MSbarPhoton::MSbarPhoton():
-    Integrator{}, ProtonStructure{},
+  MSbarPhoton::MSbarPhoton(const unique_ptr<ProtonStructure> &proton):
+    Integrator{},
+    _proton(proton),
     _use_mu2_as_upper_limit(input().get<bool>("use_mu2_as_upper_limit"))
   {
   }
@@ -21,11 +22,11 @@ namespace fiatlux
   double MSbarPhoton::evaluatephoton(const double &x, const double &mu2) const
   {
     double res = 0;
-    const double eps_local = _eps_base * _eps_rel * pow(1.0-x, 4);
-    res = integrate(0, log(1.0/x), eps_local, {x,mu2}) * _alpha_ref / M_PI / 2.0;
+    const double eps_local = _proton->_eps_base * _proton->_eps_rel * pow(1.0-x, 4);
+    res = integrate(0, log(1.0/x), eps_local, {x,mu2}) * _proton->_alpha_ref / M_PI / 2.0;
 
-    if (_qed_running)
-      res *= _alpha_running(sqrt(mu2))/_alpha_ref;
+    if (_proton->_qed_running)
+      res *= _proton->_alpha_running(sqrt(mu2))/_proton->_alpha_ref;
 
     return res;
   }
@@ -36,7 +37,7 @@ namespace fiatlux
     const double x = e[0];
     const double q2 = e[1];
     const double z = exp(-ln1oz);
-    const auto kin = compute_proton_structure(x/z, q2);
+    const auto kin = _proton->compute_proton_structure(x/z, q2);
 
     double res = -pow(z,2)*kin.F2;
     if (_use_mu2_as_upper_limit)

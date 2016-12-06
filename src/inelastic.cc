@@ -16,23 +16,24 @@ using std::endl;
 namespace fiatlux
 {
   //_________________________________________________________________________
-  InelasticPhoton::InelasticPhoton():
-    Integrator{}, ProtonStructure{},
+  InelasticPhoton::InelasticPhoton(const unique_ptr<ProtonStructure> &proton):
+    Integrator{},
+    _proton(proton),
     _q2min_inel_override(input().get<double>("q2min_inel_override")),
     _q2max_inel_override(input().get<double>("q2max_inel_override")),
     _use_mu2_as_upper_limit(input().get<bool>("use_mu2_as_upper_limit")),
-    _inelastic_q2(InelasticQ2{})
+    _inelastic_q2(InelasticQ2{proton})
   {
   }
 
   //_________________________________________________________________________
   double InelasticPhoton::evaluatephoton(const double &x, const double& mu2) const
   {
-    const double eps = _eps_base * pow(1.0-x, 4);
-    double res = integrate(0, log(1.0/x), eps, {x, mu2, eps}) * _alpha_ref / M_PI / 2.0;
+    const double eps = _proton->_eps_base * pow(1.0-x, 4);
+    double res = integrate(0, log(1.0/x), eps, {x, mu2, eps}) * _proton->_alpha_ref / M_PI / 2.0;
 
-    if (_qed_running)
-      res *= _alpha_ref/_alpha_running(sqrt(mu2));
+    if (_proton->_qed_running)
+      res *= _proton->_alpha_ref/_proton->_alpha_running(sqrt(mu2));
 
     return res;    
   }
@@ -45,7 +46,7 @@ namespace fiatlux
     const double q2 = e[1];
     const double eps = e[2];
 
-    double q2min = x*x * _mproton2 / (1.0 - z);
+    double q2min = x*x * _proton->_mproton2 / (1.0 - z);
     double q2max = q2;
     if (!_use_mu2_as_upper_limit)
       q2max /= 1.0 - z;
@@ -69,7 +70,7 @@ namespace fiatlux
         const double q2lo = max(q2min, _q2_inel_split[i]);
         const double q2hi = min(q2max, _q2_inel_split[i+1]);
         if (q2lo < q2hi)
-          res += _inelastic_q2.integrate(log(q2lo), log(q2hi), eps*_eps_rel, {x, z});
+          res += _inelastic_q2.integrate(log(q2lo), log(q2hi), eps*_proton->_eps_rel, {x, z});
       }
 
     return res*mult;
@@ -85,7 +86,6 @@ namespace fiatlux
 
     if (input().get<bool>("verbose"))
       {
-        info("InelasticPhoton::insert_inel_split","q2_inel_split:");
         stringstream ss("");
         for (const auto &i: _q2_inel_split)
           ss << i <<  " ";
@@ -100,12 +100,12 @@ namespace fiatlux
     const double z = e[1];
     const double q = exp(0.5*lnq2);
     const double q2 = q*q;
-    const auto kin = compute_proton_structure(x/z, q2);
+    const auto kin = _proton->compute_proton_structure(x/z, q2);
 
-    double res = -z*z * kin.FL + (2 - 2*z + z*z + (2 * x*x * _mproton2)/q2)* kin.F2;
+    double res = -z*z * kin.FL + (2 - 2*z + z*z + (2 * x*x * _proton->_mproton2)/q2)* kin.F2;
 
-    if (_qed_running)
-      res *= pow(_alpha_running(q)/_alpha_ref, 2);
+    if (_proton->_qed_running)
+      res *= pow(_proton->_alpha_running(q)/_proton->_alpha_ref, 2);
 
     return res;
   }

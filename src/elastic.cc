@@ -10,7 +10,6 @@
 
 #include <array>
 #include <fstream>
-using namespace std::placeholders;
 using std::fstream;
 using std::ios;
 using std::getline;
@@ -18,8 +17,9 @@ using std::getline;
 namespace fiatlux
 {
   //_________________________________________________________________________
-  ElasticPhoton::ElasticPhoton():
-    Integrator{}, ProtonStructure{},
+  ElasticPhoton::ElasticPhoton(const unique_ptr<ProtonStructure> &proton):
+    Integrator{},
+    _proton(proton),
     _elastic_electric_rescale(input().get<double>("elastic_electric_rescale")),
     _elastic_magnetic_rescale(input().get<double>("elastic_magnetic_rescale")),
     _elastic_param(input().get_elastic_param())
@@ -79,13 +79,13 @@ namespace fiatlux
     double res = 0;
     if (x != 1.0)
       {
-        const double eps_local = _eps_base * _eps_rel * pow(1.0-x, 4);
-        const double q2min = x*x*_mproton2/(1.0-x);
-        res = integrate(log(q2min), _log_q2_max, eps_local, {x}) * _alpha_ref / M_PI / 2.0;
+        const double eps_local = _proton->_eps_base * _proton->_eps_rel * pow(1.0-x, 4);
+        const double q2min = x*x*_proton->_mproton2/(1.0-x);
+        res = integrate(log(q2min), _proton->_log_q2_max, eps_local, {x}) * _proton->_alpha_ref / M_PI / 2.0;
       }
 
-    if (_qed_running)
-      res *= _alpha_ref/_alpha_running(sqrt(mu2));
+    if (_proton->_qed_running)
+      res *= _proton->_alpha_ref/_proton->_alpha_running(sqrt(mu2));
 
     return res;
   }
@@ -96,7 +96,7 @@ namespace fiatlux
     const double x = e[0];
     const double q2 = exp(lnq2);
     const array<double,2> ge_gm = elastic_ge_gm(q2);
-    const double tau = q2/(4*_mproton2);
+    const double tau = q2/(4*_proton->_mproton2);
     const double ge2 = pow(ge_gm[0], 2);
     const double gm2 = pow(ge_gm[1], 2);
     const double F2 = (ge2 + gm2*tau)/(1.0 + tau); // eq. (7a) 1607.04266
@@ -105,8 +105,8 @@ namespace fiatlux
     // eq. (6) 1607.04266
     double res = (2 - 2*x + x*x*(1.0 + 0.5/tau))*F2 - x*x * FL;
 
-    if (_qed_running)
-      res *= pow(_alpha_running(sqrt(q2))/_alpha_ref, 2);
+    if (_proton->_qed_running)
+      res *= pow(_proton->_alpha_running(sqrt(q2))/_proton->_alpha_ref, 2);
 
     return res;
   }
@@ -120,7 +120,7 @@ namespace fiatlux
       {
         // use dipole model
         ge_gm[0] = elastic_dipole_factor(q2);
-        ge_gm[1] = _mum_proton * ge_gm[0];
+        ge_gm[1] = _proton->_mum_proton * ge_gm[0];
       }
     else if (_elastic_param == elastic_A1_world_spline ||
              _elastic_param == elastic_A1_world_pol_spline)
@@ -147,7 +147,7 @@ namespace fiatlux
             ge_gm[1] = _fit[iQ2][2] * weight + _fit[iQ2+1][2] * (1.0-weight);
           }
 
-        ge_gm[1] *= _mum_proton;
+        ge_gm[1] *= _proton->_mum_proton;
       }
     else
       throw runtime_exception("ElasticPhoton::elastic_ge_gm", "Unrecognised elastic_param");

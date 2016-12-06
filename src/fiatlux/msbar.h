@@ -6,7 +6,9 @@
 #pragma once
 
 #include <vector>
+#include <memory>
 using std::vector;
+using std::unique_ptr;
 
 #include <fiatlux/integrator.h>
 #include <fiatlux/proton.h>
@@ -20,10 +22,10 @@ namespace fiatlux
    * This class provides the msbar piece of the photon
    * structre following the LUXqed description.
    */
-  class MSbarPhoton: public Integrator, public ProtonStructure
+  class MSbarPhoton: public Integrator
   {
   public:
-    MSbarPhoton();
+    MSbarPhoton(unique_ptr<ProtonStructure> const& proton);
 
     /**
      * @brief Evaluates the msbar piece of the photon PDF.
@@ -42,6 +44,7 @@ namespace fiatlux
     double integrand(double const& ln1oz, vector<double> const& e) const;
 
   private:
+    unique_ptr<ProtonStructure> const& _proton;
     bool _use_mu2_as_upper_limit; //!< upper bound switcher
   };
 }

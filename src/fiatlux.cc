@@ -14,9 +14,10 @@ namespace fiatlux
   FiatLux::FiatLux(const string &filename)
   {
     input().load(filename);
-    _elastic = unique_ptr<ElasticPhoton>(new ElasticPhoton{});
-    _inelastic = unique_ptr<InelasticPhoton>(new InelasticPhoton{});
-    _msbar = unique_ptr<MSbarPhoton>(new MSbarPhoton{});
+    _proton= unique_ptr<ProtonStructure>(new ProtonStructure{});
+    _elastic = unique_ptr<ElasticPhoton>(new ElasticPhoton{_proton});
+    _inelastic = unique_ptr<InelasticPhoton>(new InelasticPhoton{_proton});
+    _msbar = unique_ptr<MSbarPhoton>(new MSbarPhoton{_proton});
 
     _inelastic->insert_inel_split(-2);
     const double lhtrq2 = input().get<double>("lhapdf_transition_q2");
@@ -28,16 +29,13 @@ namespace fiatlux
   //_________________________________________________________________________
   void FiatLux::plug_alphaqed(alpha_running const& a) const
   {
-    _elastic->set_alpha_running(a);
-    _inelastic->set_alpha_running(a);
-    _msbar->set_alpha_running(a);
+    _proton->set_alpha_running(a);
   }
 
   //_________________________________________________________________________
   void FiatLux::plug_f2_fl(ext_sf const& f2, ext_sf const& fl) const
   {
-    _inelastic->set_sf(f2, fl);
-    _msbar->set_sf(f2, fl);
+    _proton->set_sf(f2,fl);
   }
 
   //_________________________________________________________________________

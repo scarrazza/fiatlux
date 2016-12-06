@@ -14,7 +14,7 @@ contains
     real(dp), intent(in) :: mcharm, mbottom, mtop
     integer :: iflv
     call InitQEDCoupling(alpha_qed, mcharm, mbottom, mtop)
-    call InitPDFsetByName("CT14nnlo")
+    call InitPDFsetByName("PDF4LHC15_nnlo_100")
     call InitPDFm(1,0)
     call hoppet_start()
     call hoppet_read_PDF()

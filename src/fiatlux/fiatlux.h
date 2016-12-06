@@ -81,6 +81,7 @@ namespace fiatlux
     void load_settings(string const& filename) const;
 
   private:
+    unique_ptr<ProtonStructure> _proton; //!< the proton structure used by all components
     unique_ptr<ElasticPhoton> _elastic; //!< the integrator for the elastic component.
     unique_ptr<InelasticPhoton> _inelastic; //!< the integrator for the inelastic component.
     unique_ptr<MSbarPhoton> _msbar; //!< the integrator for the msbar component.

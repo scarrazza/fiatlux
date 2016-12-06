@@ -143,10 +143,11 @@ namespace fiatlux
      */
     double R_from_F2FL(double const& x, double const& q2, double const& F2, double const& FL) const;
 
-  protected:
+  public:
     alpha_running _alpha_running; //!< the alpha running function
     ext_sf _f2; //!< the external F2 function for Q2 > transition
     ext_sf _fl; //!< the external FL function for Q2 > transition
+
     const bool _qed_running;  //!< switch qed alpha running
     const double _mproton2;   //!< the proton mass^2
     const double _mum_proton; //!< proton magnetic momentum.
@@ -162,6 +163,6 @@ namespace fiatlux
     const double _rescale_resonance;
     const double _HAC_loW2; //!< low W2 CLAS F2
     const double _HAC_hiW2; //!< high W2 Hermes ALLM sigmaTL
-    int _inelastic_param;   //!< the inelastic parametrization
+    const int _inelastic_param;   //!< the inelastic parametrization
   };
 }

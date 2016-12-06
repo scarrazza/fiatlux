@@ -6,7 +6,9 @@
 #pragma once
 
 #include <vector>
+#include <memory>
 using std::vector;
+using std::unique_ptr;
 
 #include <fiatlux/integrator.h>
 #include <fiatlux/proton.h>
@@ -16,11 +18,13 @@ namespace fiatlux
   /**
    * @brief The InelasticQ2 class
    */
-  class InelasticQ2: public Integrator, public ProtonStructure
+  class InelasticQ2: public Integrator
   {
   public:
-    InelasticQ2(): Integrator{}, ProtonStructure{} {}
+    InelasticQ2(unique_ptr<ProtonStructure> const& p): Integrator{}, _proton(p) {}
     double integrand(double const& lnq2, const vector<double> &e) const;
+  private:
+    unique_ptr<ProtonStructure> const& _proton;
   };
 
   /**
@@ -30,7 +34,7 @@ namespace fiatlux
    * This class provides the inelastic piece of the photon
    * structre following the LUXqed description.
    */
-  class InelasticPhoton: public Integrator, public ProtonStructure
+  class InelasticPhoton: public Integrator
   {
   public:
     /**
@@ -39,7 +43,7 @@ namespace fiatlux
      * Associates the integrand function to the integrator
      * object.
      */
-    InelasticPhoton();
+    InelasticPhoton(unique_ptr<ProtonStructure> const& proton);
 
     /**
      * @brief Evaluates the inelastic piece of the photon PDF.
@@ -72,22 +76,10 @@ namespace fiatlux
      *
      * @return the constant referece to the vector containing the splits.
      */
-    const vector<double>& get_q2_inel_split() const { return _q2_inel_split; }
-
-    /**
-     * @brief set_alpha_running
-     * @param a
-     */
-    void set_alpha_running(const alpha_running &a) { _inelastic_q2.set_alpha_running(a); ProtonStructure::set_alpha_running(a); }
-
-    /**
-     * @brief set_sf
-     * @param f2
-     * @param fl
-     */
-    void set_sf(ext_sf const& f2, ext_sf const& fl) { _inelastic_q2.set_sf(f2,fl); ProtonStructure::set_sf(f2,fl); }
+    const vector<double>& get_q2_inel_split() const { return _q2_inel_split; }   
 
   private:
+    unique_ptr<ProtonStructure> const& _proton; //!< the proton container
     double _q2min_inel_override;  //!< override value for the q2min
     double _q2max_inel_override;  //!< override value for the q2max
     bool _use_mu2_as_upper_limit; //!< upper bound switcher

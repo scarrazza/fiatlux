@@ -8,9 +8,11 @@
 #include <array>
 #include <string>
 #include <vector>
+#include <memory>
 using std::array;
 using std::string;
 using std::vector;
+using std::unique_ptr;
 
 #include <fiatlux/integrator.h>
 #include <fiatlux/proton.h>
@@ -24,7 +26,7 @@ namespace fiatlux
    * This class provides the elastic piece of the photon
    * structre following the LUXqed description.
    */
-  class ElasticPhoton: public Integrator, public ProtonStructure
+  class ElasticPhoton: public Integrator
   {
   public:
     /**
@@ -33,7 +35,7 @@ namespace fiatlux
      * Associates the integrand function to the integrator
      * object.
      */
-    ElasticPhoton();
+    ElasticPhoton(unique_ptr<ProtonStructure> const& proton);
 
     /**
      * @brief Evaluates the elastic piece of the photon PDF.
@@ -75,6 +77,7 @@ namespace fiatlux
     double elastic_dipole_factor(double const& q2) const;
 
   private:
+    unique_ptr<ProtonStructure> const& _proton;
     double _elastic_electric_rescale; //!< the ge rescale.
     double _elastic_magnetic_rescale; //!< the gm rescale.
     int    _elastic_param;            //!< the elastic parametrization.

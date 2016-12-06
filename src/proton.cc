@@ -192,8 +192,7 @@ namespace fiatlux
     double sigmatot, F2, dsigmatot, dF2;
     gd_fit_11_(x,q2,w2,"p",sigmatot,F2,dsigmatot,dF2);
     double sigma = sigmatot + _allm_limits*dsigmatot;
-    sigma = sigma/hbarc2 * _alpha_ref/_alpha_ref;
-    return sigma;
+    return sigma/hbarc2;
   }
 
   //_________________________________________________________________________
