@@ -12,9 +12,13 @@ using std::function;
 namespace fiatlux
 {
   /**
-   * @brief Typename for alpha running
+   * @brief Typename for alpha running alpha(Q)
    */
   using alpha_running = function<double(double const&)>;
+
+  /**
+   * @brief Structure function F(x,Q)
+   */
   using ext_sf = function<double(double const&, double const&)>;
 
   /**

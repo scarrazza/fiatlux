@@ -24,6 +24,17 @@ extern "C" double __hoppet_MOD_f2(double const&, double const&);
 extern "C" double __hoppet_MOD_fl(double const&, double const&);
 extern "C" double __hoppet_MOD_masses(int const&);
 
+double APFELF2(double const& x, double const& Q)
+{
+  APFEL::ComputeStructureFunctionsAPFEL(Q,Q);
+  return APFEL::F2total(x);
+}
+
+double APFELFL(double const& x, double const& Q)
+{
+  APFEL::ComputeStructureFunctionsAPFEL(Q,Q);
+  return APFEL::FLtotal(x);
+}
 
 int main()
 {
@@ -31,17 +42,22 @@ int main()
 
   bool apfel = input().get<bool>("apfel");
 
-  const double mcharm = 1.5, mbottom = 4.5, mtop = 173.0;
+  const double mcharm = 1.275, mbottom = 4.18, mtop = 173.07;
   if (apfel)
     {
       cout << "Using APFEL" << endl;
-      APFEL::SetPerturbativeOrder(1);
+      APFEL::SetPerturbativeOrder(2);
       APFEL::SetTheory("QUniD");
       APFEL::EnableNLOQEDCorrections(true);
       APFEL::SetMSbarMasses(mcharm, mbottom, mtop);
       APFEL::SetAlphaQEDRef(1/137.035999074, 0.000510998946);
-      APFEL::InitializeAPFEL();
+      APFEL::SetPDFSet("PDF4LHC15_nnlo_100.LHgrid");
+      APFEL::SetMassScheme("FONLL-C");
+      APFEL::SetProcessDIS("NC");
+      APFEL::InitializeAPFEL_DIS();
       lux.PlugAlphaQED(APFEL::AlphaQED);
+      lux.PlugStructureFunctions(APFELF2, APFELFL);
+      lux.InsertInelasticSplitQ({mbottom, mtop});
     }
   else
     {
@@ -49,7 +65,7 @@ int main()
       __hoppet_MOD_initialize(mcharm, mbottom, mtop);
       lux.PlugAlphaQED(__hoppet_MOD_alphaqed);
       lux.PlugStructureFunctions(__hoppet_MOD_f2, __hoppet_MOD_fl);
-      lux.InsertInelasticSplit({__hoppet_MOD_masses(5),__hoppet_MOD_masses(6)});
+      lux.InsertInelasticSplitQ({__hoppet_MOD_masses(5),__hoppet_MOD_masses(6)});
     }
 
   /*

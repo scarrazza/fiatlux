@@ -64,7 +64,7 @@ namespace fiatlux
      * discontinuity regions. Optional, useful when dealing with complicated sf.
      * @param thresholds a vector with the Q knots for the split.
      */
-    void InsertInelasticSplit(vector<double> const& qthresholds) const;
+    void InsertInelasticSplitQ(vector<double> const& qthresholds) const;
 
     /**
      * @brief Evaluates the photon PDF for a given x and Q2.

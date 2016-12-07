@@ -39,7 +39,7 @@ namespace fiatlux
   }
 
   //_________________________________________________________________________
-  void FiatLux::InsertInelasticSplit(vector<double> const& qthresholds) const
+  void FiatLux::InsertInelasticSplitQ(vector<double> const& qthresholds) const
   {
     for (auto const& v: qthresholds)
       _inelastic->insert_inel_split(pow(v, 2));
