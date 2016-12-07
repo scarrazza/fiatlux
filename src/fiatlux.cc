@@ -27,26 +27,26 @@ namespace fiatlux
   }
 
   //_________________________________________________________________________
-  void FiatLux::plug_alphaqed(alpha_running const& a) const
+  void FiatLux::PlugAlphaQED(alpha_running const& a) const
   {
     _proton->set_alpha_running(a);
   }
 
   //_________________________________________________________________________
-  void FiatLux::plug_f2_fl(ext_sf const& f2, ext_sf const& fl) const
+  void FiatLux::PlugStructureFunctions(ext_sf const& f2, ext_sf const& fl) const
   {
     _proton->set_sf(f2,fl);
   }
 
   //_________________________________________________________________________
-  void FiatLux::insert_inel_split(vector<double> const& qthresholds) const
+  void FiatLux::InsertInelasticSplit(vector<double> const& qthresholds) const
   {
     for (auto const& v: qthresholds)
       _inelastic->insert_inel_split(pow(v, 2));
   }
 
   //_________________________________________________________________________
-  luxqed FiatLux::evaluatephoton(const double &x, const double &mu2) const
+  luxqed FiatLux::EvaluatePhoton(const double &x, const double &mu2) const
   {
     luxqed e;
     e.elastic = _elastic->evaluatephoton(x, mu2);

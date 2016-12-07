@@ -41,15 +41,15 @@ int main()
       APFEL::SetMSbarMasses(mcharm, mbottom, mtop);
       APFEL::SetAlphaQEDRef(1/137.035999074, 0.000510998946);
       APFEL::InitializeAPFEL();
-      lux.plug_alphaqed(APFEL::AlphaQED);
+      lux.PlugAlphaQED(APFEL::AlphaQED);
     }
   else
     {
       cout << "Using HOPPET" << endl;
       __hoppet_MOD_initialize(mcharm, mbottom, mtop);
-      lux.plug_alphaqed(__hoppet_MOD_alphaqed);
-      lux.plug_f2_fl(__hoppet_MOD_f2, __hoppet_MOD_fl);                       
-      lux.insert_inel_split({__hoppet_MOD_masses(5),__hoppet_MOD_masses(6)});
+      lux.PlugAlphaQED(__hoppet_MOD_alphaqed);
+      lux.PlugStructureFunctions(__hoppet_MOD_f2, __hoppet_MOD_fl);
+      lux.InsertInelasticSplit({__hoppet_MOD_masses(5),__hoppet_MOD_masses(6)});
     }
 
   /*
@@ -67,7 +67,7 @@ int main()
       const auto y = y_of_zeta(i*0.1, 0);
       const auto x = exp(-y);
 
-      const auto pht = lux.evaluatephoton(x,q2);
+      const auto pht = lux.EvaluatePhoton(x,q2);
       cout << x << "\t"
            << q2 << "\t"
            << pht.elastic << "\t"

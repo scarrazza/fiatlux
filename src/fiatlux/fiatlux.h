@@ -50,20 +50,21 @@ namespace fiatlux
      * @brief Set the external function which returns alphaQED running.
      * @param a the function for alpha running.
      */
-    void plug_alphaqed(alpha_running const& a) const;
+    void PlugAlphaQED(alpha_running const& a) const;
 
     /**
      * @brief Set the external function which returns F2(x,Q) and FL(x,Q).
      * @param f2 the F2(x,Q) structure function.
      * @param fl the FL(x,Q) structure function.
      */
-    void plug_f2_fl(ext_sf const& f2, ext_sf const& fl) const;
+    void PlugStructureFunctions(ext_sf const& f2, ext_sf const& fl) const;
 
     /**
-     * @brief insert_inel_split
-     * @param thresholds
+     * @brief Splits inelastic integral into small pieces in order to avoid
+     * discontinuity regions. Optional, useful when dealing with complicated sf.
+     * @param thresholds a vector with the Q knots for the split.
      */
-    void insert_inel_split(vector<double> const& qthresholds) const;
+    void InsertInelasticSplit(vector<double> const& qthresholds) const;
 
     /**
      * @brief Evaluates the photon PDF for a given x and Q2.
@@ -75,7 +76,7 @@ namespace fiatlux
      * @param q2 the energy scale.
      * @return a luxqed structure with all integral pieces and the total sum.
      */
-    luxqed evaluatephoton(double const&x, double const& mu2) const;
+    luxqed EvaluatePhoton(double const&x, double const& mu2) const;
 
   protected:
     void load_settings(string const& filename) const;
