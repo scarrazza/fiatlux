@@ -60,7 +60,7 @@ int main()
   */
 
   // print results
-  double q2 = 100;
+  double q2 = 10000;
   cout << setprecision(15) << scientific;
   for (auto i = 1; i <= 100; i++)
     {
