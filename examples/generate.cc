@@ -9,6 +9,7 @@
 #include <fiatlux/fiatlux.h>
 #include <fiatlux/settings.h>
 #include <APFEL/APFEL.h>
+#include <LHAPDF/LHAPDF.h>
 using namespace std;
 using namespace fiatlux;
 
@@ -23,6 +24,14 @@ extern "C" double __hoppet_MOD_alphaqed(double const&);
 extern "C" double __hoppet_MOD_f2(double const&, double const&);
 extern "C" double __hoppet_MOD_fl(double const&, double const&);
 extern "C" double __hoppet_MOD_masses(int const&);
+
+LHAPDF::PDF* _lhapdf;
+extern "C" void externalsetapfel_(double const& x, double const& Q, double *xf)
+{
+  for (int i = 0; i < 13; i++)
+    xf[i] = _lhapdf->xfxQ(i-6, x, Q);
+  xf[13] = 0.0;
+}
 
 double APFELF2(double const& x, double const& Q)
 {
@@ -46,18 +55,20 @@ int main()
   if (apfel)
     {
       cout << "Using APFEL" << endl;
-      APFEL::SetPerturbativeOrder(2);
+      APFEL::SetPerturbativeOrder(0);
       APFEL::SetTheory("QUniD");
       APFEL::EnableNLOQEDCorrections(true);
       APFEL::SetMSbarMasses(mcharm, mbottom, mtop);
       APFEL::SetAlphaQEDRef(1/137.035999074, 0.000510998946);
-      APFEL::SetPDFSet("PDF4LHC15_nnlo_100.LHgrid");
-      APFEL::SetMassScheme("FONLL-C");
-      APFEL::SetProcessDIS("NC");
+      _lhapdf = LHAPDF::mkPDF("PDF4LHC15_nnlo_100");
+      APFEL::SetPDFSet("external");
+      //APFEL::SetMassScheme("ZMFV");
+      //APFEL::SetProcessDIS("NC");
+      APFEL::SetQLimits(1, 1e100);
       APFEL::InitializeAPFEL_DIS();
       lux.PlugAlphaQED(APFEL::AlphaQED);
       lux.PlugStructureFunctions(APFELF2, APFELFL);
-      lux.InsertInelasticSplitQ({mbottom, mtop});
+      lux.InsertInelasticSplitQ({mbottom, 1e100});
     }
   else
     {

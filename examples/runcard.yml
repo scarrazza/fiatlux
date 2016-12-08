@@ -1,5 +1,5 @@
 # hoppet vs apfel backend
-apfel: off
+apfel: on
 
 # runcard for libluxqed
 qed_running: on  # determines the running of alpha.

@@ -6,6 +6,7 @@
 #include "fiatlux/fiatlux.h"
 #include "fiatlux/tools.h"
 #include "fiatlux/settings.h"
+#include "fiatlux/config.h"
 #include <exception>
 
 namespace fiatlux
@@ -13,6 +14,16 @@ namespace fiatlux
   //_________________________________________________________________________
   FiatLux::FiatLux(const string &filename)
   {
+
+    cout << "   _ _ _     ______ _       _   _                  " << endl;
+    cout << "  | (_) |   |  ____(_)     | | | |                " << endl;
+    cout << "  | |_| |__ | |__   _  __ _| |_| |    _   ___  __ " << endl;
+    cout << "  | | | '_ \\|  __| | |/ _` | __| |   | | | \\ \\/ / " << endl;
+    cout << "  | | | |_) | |    | | (_| | |_| |___| |_| |>  <  " << endl;
+    cout << "  |_|_|_.__/|_|    |_|\\__,_|\\__|______\\__,_/_/\\_\\ " << endl;
+    cout << "        __version__ " << VERSION << " : S. Carrazza" << endl;
+    cout << endl;
+
     input().load(filename);
     _proton= unique_ptr<ProtonStructure>(new ProtonStructure{});
     _elastic = unique_ptr<ElasticPhoton>(new ElasticPhoton{_proton});
