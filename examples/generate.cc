@@ -9,7 +9,6 @@
 #include <fiatlux/fiatlux.h>
 #include <fiatlux/settings.h>
 #include <APFEL/APFEL.h>
-#include <LHAPDF/LHAPDF.h>
 using namespace std;
 using namespace fiatlux;
 
@@ -25,24 +24,14 @@ extern "C" double __hoppet_MOD_f2(double const&, double const&);
 extern "C" double __hoppet_MOD_fl(double const&, double const&);
 extern "C" double __hoppet_MOD_masses(int const&);
 
-LHAPDF::PDF* _lhapdf;
-extern "C" void externalsetapfel_(double const& x, double const& Q, double *xf)
-{
-  for (int i = 0; i < 13; i++)
-    xf[i] = _lhapdf->xfxQ(i-6, x, Q);
-  xf[13] = 0.0;
-}
-
 double APFELF2(double const& x, double const& Q)
 {
-  APFEL::ComputeStructureFunctionsAPFEL(Q,Q);
-  return APFEL::F2total(x);
+  return APFEL::StructureFunctionxQ("EM", "F2", "total", x, Q);
 }
 
 double APFELFL(double const& x, double const& Q)
 {
-  APFEL::ComputeStructureFunctionsAPFEL(Q,Q);
-  return APFEL::FLtotal(x);
+  return APFEL::StructureFunctionxQ("EM", "FL", "total", x, Q);
 }
 
 int main()
@@ -55,17 +44,16 @@ int main()
   if (apfel)
     {
       cout << "Using APFEL" << endl;
-      APFEL::SetPerturbativeOrder(0);
+      APFEL::SetPerturbativeOrder(2);
       APFEL::SetTheory("QUniD");
       APFEL::EnableNLOQEDCorrections(true);
-      APFEL::SetMSbarMasses(mcharm, mbottom, mtop);
+      APFEL::SetPoleMasses(mcharm, mbottom, mtop);
       APFEL::SetAlphaQEDRef(1/137.035999074, 0.000510998946);
-      _lhapdf = LHAPDF::mkPDF("PDF4LHC15_nnlo_100");
-      APFEL::SetPDFSet("external");
-      //APFEL::SetMassScheme("ZMFV");
-      //APFEL::SetProcessDIS("NC");
-      APFEL::SetQLimits(1, 1e100);
+      APFEL::SetPDFSet("PDF4LHC15_nnlo_100.LHgrid");
+      APFEL::SetQLimits(1, 1e6);
+      APFEL::SetQGridParameters(50, 3);
       APFEL::InitializeAPFEL_DIS();
+      APFEL::CacheStructureFunctionsAPFEL(1);
       lux.PlugAlphaQED(APFEL::AlphaQED);
       lux.PlugStructureFunctions(APFELF2, APFELFL);
       lux.InsertInelasticSplitQ({mbottom, 1e100});
@@ -78,13 +66,6 @@ int main()
       lux.PlugStructureFunctions(__hoppet_MOD_f2, __hoppet_MOD_fl);
       lux.InsertInelasticSplitQ({__hoppet_MOD_masses(5),__hoppet_MOD_masses(6)});
     }
-
-  /*
-  __hoppet_MOD_initialize(mcharm, mbottom, mtop);
-  cout << APFEL::AlphaQED(0.000510998946) << " " << __hoppet_MOD_alphaqed(0.000510998946) << endl;
-  cout << APFEL::AlphaQED(1.777) << " " << __hoppet_MOD_alphaqed(1.777) << endl;
-  cout << APFEL::AlphaQED(81.9) << " " << __hoppet_MOD_alphaqed(81.9) << endl;  
-  */
 
   // print results
   double q2 = 10000;

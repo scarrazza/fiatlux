@@ -25,6 +25,13 @@ contains
     initialized = .true.
   end subroutine
 
+  subroutine light_initialize(mcharm, mbottom, mtop)
+    real(dp), intent(in) :: mcharm, mbottom, mtop
+    integer :: iflv
+    call InitQEDCoupling(alpha_qed, mcharm, mbottom, mtop)
+    initialized = .true.
+  end subroutine
+
   subroutine checkinit()
     if (.not.initialized) then
       print *, "Error HOPPET not initialized"
