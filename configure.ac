@@ -15,6 +15,8 @@ AC_CONFIG_FILES([bin/Makefile])
 AC_CONFIG_FILES([bin/fiatlux-config])
 AC_CONFIG_FILES([src/Makefile])
 AC_CONFIG_FILES([examples/Makefile])
+AM_CXXFLAGS=["-DDATA_PATH="$datadir" "]
+AC_SUBST(AM_CXXFLAGS)
 AM_INIT_AUTOMAKE([subdir-objects])
 
 # Checks for programs.

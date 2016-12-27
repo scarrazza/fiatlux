@@ -14,6 +14,13 @@ using std::fstream;
 using std::ios;
 using std::getline;
 
+#ifndef DATA_PATH
+#define DATA_PATH ./data
+#endif
+
+#define STR_EXPAND(top) #top
+#define STR(tok) STR_EXPAND(tok)
+
 namespace fiatlux
 {
   //_________________________________________________________________________
@@ -32,11 +39,11 @@ namespace fiatlux
         fstream f;
         switch (_elastic_param) {
           case elastic_A1_world_spline:
-            f.open("data/elastic/World/CrossSectionsOnly/SplinesWithVariableKnots.dat", ios::in);
+            f.open((string(STR(DATA_PATH)) + "/fiatlux/CrossSectionsOnly_SplinesWithVariableKnots.dat").c_str(), ios::in);
             break;
 
           case elastic_A1_world_pol_spline:
-            f.open("data/elastic/World/CrossSectionsAndPolarized/SplinesWithVariableKnots.dat", ios::in);
+            f.open((string(STR(DATA_PATH)) + "/fiatlux/CrossSectionsAndPolarized_SplinesWithVariableKnots.dat").c_str(), ios::in);
             break;
           }
 
