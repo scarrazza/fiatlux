@@ -8,6 +8,7 @@
 #include "fiatlux/settings.h"
 #include "fiatlux/config.h"
 #include <exception>
+#include <cmath>
 
 namespace fiatlux
 {

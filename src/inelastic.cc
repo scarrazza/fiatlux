@@ -7,6 +7,8 @@
 #include "fiatlux/tools.h"
 #include "fiatlux/integrator.h"
 #include "fiatlux/settings.h"
+#include <algorithm>
+#include <cmath>
 
 using std::min;
 using std::max;

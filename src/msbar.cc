@@ -7,6 +7,7 @@
 #include "fiatlux/tools.h"
 #include "fiatlux/integrator.h"
 #include "fiatlux/settings.h"
+#include <cmath>
 
 namespace fiatlux
 {

@@ -6,6 +6,7 @@
 #include "fiatlux/proton.h"
 #include "fiatlux/settings.h"
 #include "fiatlux/tools.h"
+#include <cmath>
 
 extern "C" {
   void gd_fit_11_(double const&, double const&,
