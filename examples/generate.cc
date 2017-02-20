@@ -68,6 +68,7 @@ int main()
     }
 
   // print results
+  cout << "x, Q2, elastic, inelastic, msbar, total" << endl;
   double q2 = 10000;
   cout << setprecision(15) << scientific;
   for (auto i = 1; i <= 100; i++)
