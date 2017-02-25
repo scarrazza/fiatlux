@@ -45,15 +45,16 @@ int main()
     {
       cout << "Using APFEL" << endl;
       APFEL::SetPerturbativeOrder(2);
-      APFEL::SetTheory("QUniD");
-      APFEL::EnableNLOQEDCorrections(true);
+      //APFEL::SetTheory("QUniD");
+      //APFEL::EnableNLOQEDCorrections(true);
+      APFEL::SetAlphaQCDRef(0.118, 91.2);
       APFEL::SetPoleMasses(mcharm, mbottom, mtop);
       APFEL::SetAlphaQEDRef(1/137.035999074, 0.000510998946);
       APFEL::SetPDFSet("PDF4LHC15_nnlo_100.LHgrid");
       APFEL::SetQLimits(1, 1e6);
       APFEL::SetQGridParameters(50, 3);
       APFEL::InitializeAPFEL_DIS();
-      APFEL::CacheStructureFunctionsAPFEL(1);
+      APFEL::CacheStructureFunctionsAPFEL(-1);
       lux.PlugAlphaQED(APFEL::AlphaQED);
       lux.PlugStructureFunctions(APFELF2, APFELFL);
       lux.InsertInelasticSplitQ({mbottom, 1e100});

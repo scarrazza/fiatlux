@@ -35,13 +35,15 @@ int main()
   APFEL::SetPerturbativeOrder(2);
   APFEL::SetTheory("QUniD");
   APFEL::EnableNLOQEDCorrections(true);
+  APFEL::EnableSFNLOQEDCorrections(false);
+  APFEL::SetAlphaQCDRef(0.118, 91.2);
   APFEL::SetPoleMasses(mcharm, mbottom, mtop);
   APFEL::SetAlphaQEDRef(1/137.035999074, 0.000510998946);
   APFEL::SetPDFSet("PDF4LHC15_nnlo_100.LHgrid");
   APFEL::SetQLimits(1, 1e6);
   APFEL::SetQGridParameters(50, 3);
   APFEL::InitializeAPFEL_DIS();
-  APFEL::CacheStructureFunctionsAPFEL(1);
+  APFEL::CacheStructureFunctionsAPFEL(-1);
 
   // loading hoppet
   cout << "Using HOPPET" << endl;
