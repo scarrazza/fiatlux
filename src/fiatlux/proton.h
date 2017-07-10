@@ -81,6 +81,12 @@ namespace fiatlux
     void set_alpha_running(alpha_running const& a) { _alpha_running = a; }
 
     /**
+     * @brief Set the alpha value at reference scale
+     * @param aref the alpha value at reference scale
+     */
+    void set_alpha_ref(double aref) { _alpha_ref = aref; }
+
+    /**
      * @brief Set the structure functions for the F2(x,Q) and FL(x,Q)
      * @param f2 the F2(x,Q) structure function
      * @param fl the FL(x,Q) structure function
@@ -153,12 +159,12 @@ namespace fiatlux
     ext_sf _fl; //!< the external FL function for Q2 > transition
 
     const bool _qed_running;  //!< switch qed alpha running
+    double _alpha_ref;        //!< the reference alpha.
     const double _mproton2;   //!< the proton mass^2
     const double _mum_proton; //!< proton magnetic momentum.
     const double _eps_base;   //!< precision on final integration of double integral.
     const double _eps_rel;    //!< extra precision on any single integration.
     const double _log_q2_max; //!< the maximum allowed Q2.
-    const double _alpha_ref;  //!< the reference alpha.
     const double _rescale_r;  //!< the rescale coeff.
     const double _rescale_r_twist4; //!< the twist rescale
     const double _lhapdf_transition_q2; //!<    

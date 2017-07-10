@@ -49,8 +49,9 @@ namespace fiatlux
     /**
      * @brief Set the external function which returns alphaQED running.
      * @param a the function for alpha running.
+     * @param qref the reference energy scale (relevant when qed_running is false)
      */
-    void PlugAlphaQED(alpha_running const& a) const;
+    void PlugAlphaQED(alpha_running const& a, double qref = 0.000510998946) const;
 
     /**
      * @brief Set the external function which returns F2(x,Q) and FL(x,Q).

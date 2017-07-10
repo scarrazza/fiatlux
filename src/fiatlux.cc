@@ -39,9 +39,10 @@ namespace fiatlux
   }
 
   //_________________________________________________________________________
-  void FiatLux::PlugAlphaQED(alpha_running const& a) const
+  void FiatLux::PlugAlphaQED(alpha_running const& a, double qref) const
   {
     _proton->set_alpha_running(a);
+    _proton->set_alpha_ref(a(qref));
   }
 
   //_________________________________________________________________________

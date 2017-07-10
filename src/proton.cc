@@ -19,12 +19,12 @@ namespace fiatlux
   //_________________________________________________________________________
   ProtonStructure::ProtonStructure():
     _qed_running(input().get<bool>("qed_running")),
+    _alpha_ref(1/137.035999074), // @ electron mass = 0.000510998946
     _mproton2(pow(input().get<double>("mproton"), 2)),
     _mum_proton(input().get<double>("mum_proton")),
     _eps_base(input().get<double>("eps_base")),
     _eps_rel(input().get<double>("eps_rel")),
     _log_q2_max(log(input().get<double>("q2_max"))),
-    _alpha_ref(input().get<double>("alpha_ref")),
     _rescale_r(input().get<double>("rescale_r")),
     _rescale_r_twist4(input().get<double>("rescale_r_twist4")),
     _lhapdf_transition_q2(input().get<double>("lhapdf_transition_q2")),
