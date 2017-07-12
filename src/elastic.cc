@@ -16,7 +16,7 @@ using std::ios;
 using std::getline;
 
 #ifndef DATA_PATH
-#define DATA_PATH ./data
+#define DATA_PATH "./data"
 #endif
 
 #define STR_EXPAND(top) #top
@@ -40,16 +40,16 @@ namespace fiatlux
         fstream f;
         switch (_elastic_param) {
           case elastic_A1_world_spline:
-            f.open((string(STR(DATA_PATH)) + "/fiatlux/CrossSectionsOnly_SplinesWithVariableKnots.dat").c_str(), ios::in);
+            f.open((string(DATA_PATH) + "/CrossSectionsOnly_SplinesWithVariableKnots.dat").c_str(), ios::in);
             break;
 
           case elastic_A1_world_pol_spline:
-            f.open((string(STR(DATA_PATH)) + "/fiatlux/CrossSectionsAndPolarized_SplinesWithVariableKnots.dat").c_str(), ios::in);
+            f.open((string(DATA_PATH) + "/CrossSectionsAndPolarized_SplinesWithVariableKnots.dat").c_str(), ios::in);
             break;
           }
 
         if (f.fail())
-          throw runtime_exception("ElasticPhoton::ElasticPhoton", "data file not found");
+          throw runtime_exception("ElasticPhoton::ElasticPhoton", "data file not found in " + string(STR(DATA_PATH)) );
 
         // initial nodes for interpolation
         _fit.push_back({0,1,1});
