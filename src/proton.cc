@@ -64,7 +64,7 @@ namespace fiatlux
   }
 
   //_________________________________________________________________________
-  StrucFunc ProtonStructure::compute_proton_structure(const double &x, const double &q2) const
+  StrucFunc ProtonStructure::compute_proton_structure(const double &x, const double &q2, bool f2lo_only) const
   {
     StrucFunc sf;
     sf.x = x;
@@ -76,7 +76,7 @@ namespace fiatlux
         Hermes_ALLM_CLAS(sf);
         break;
       case inelastic_LHAPDF_Hermes_ALLM_CLAS:
-        LHAPDF_Hermes_ALLM_CLAS(sf);
+        LHAPDF_Hermes_ALLM_CLAS(sf, f2lo_only);
         break;
       default:
         throw runtime_exception("ProtonStructure::compute_proton_structure", "Unrecognised inelastic_param");
@@ -131,21 +131,27 @@ namespace fiatlux
       }
 
     // fill F2 and FL
-    sf.F2 = F2_from_sigmaTL(sf.x, sf.q2, sigmaTL);
+    sf.F2 = sf.F2LO = F2_from_sigmaTL(sf.x, sf.q2, sigmaTL);
     sf.FL = FL_from_F2R(sf.x, sf.q2, sf.F2, rvalue);
   }
 
   //_________________________________________________________________________
-  void ProtonStructure::LHAPDF_Hermes_ALLM_CLAS(StrucFunc & sf) const
+  void ProtonStructure::LHAPDF_Hermes_ALLM_CLAS(StrucFunc & sf, bool f2lo_only) const
   {
     if (sf.w2 > _HAC_hiW2 && sf.q2 > _lhapdf_transition_q2)
       {
         double rvalue = 1;
         rescaler(rvalue, sf.q2);
         const double q = sqrt(sf.q2);
+
         // call external functions
-        sf.F2 = _f2(sf.x, q)*_rescale_non_resonance;
-        sf.FL = rvalue*_fl(sf.x, q)*_rescale_non_resonance;
+        if (f2lo_only)
+          sf.F2LO = _f2lo(sf.x, q)*_rescale_non_resonance; // following LUX17
+        else
+          {
+            sf.F2 = _f2(sf.x, q)*_rescale_non_resonance;
+            sf.FL = rvalue*_fl(sf.x, q)*_rescale_non_resonance;
+          }
       }
     else
        Hermes_ALLM_CLAS(sf);

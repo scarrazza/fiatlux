@@ -57,8 +57,9 @@ namespace fiatlux
      * @brief Set the external function which returns F2(x,Q) and FL(x,Q).
      * @param f2 the F2(x,Q) structure function.
      * @param fl the FL(x,Q) structure function.
+     * @param f2lo the F2(x,Q) at leading order.
      */
-    void PlugStructureFunctions(ext_sf const& f2, ext_sf const& fl) const;
+    void PlugStructureFunctions(ext_sf const& f2, ext_sf const& fl, ext_sf const& f2lo) const;
 
     /**
      * @brief Splits inelastic integral into small pieces in order to avoid

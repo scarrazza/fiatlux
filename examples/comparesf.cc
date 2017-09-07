@@ -15,6 +15,7 @@ extern "C" double __hoppet_MOD_initialize(double const&,double const&, double co
 extern "C" double __hoppet_MOD_alphaqed(double const&);
 extern "C" double __hoppet_MOD_f2(double const&, double const&);
 extern "C" double __hoppet_MOD_fl(double const&, double const&);
+extern "C" double __hoppet_MOD_f2lo(double const&, double const&);
 extern "C" double __hoppet_MOD_masses(int const&);
 
 double APFELF2(double const& x, double const& Q)
@@ -42,8 +43,10 @@ int main()
   APFEL::SetPDFSet("PDF4LHC15_nnlo_100.LHgrid");
   APFEL::SetQLimits(1, 1e6);
   APFEL::SetQGridParameters(50, 3);
+  APFEL::SetProcessDIS("NC");
   APFEL::InitializeAPFEL_DIS();
   APFEL::CacheStructureFunctionsAPFEL(-1);
+  APFEL::CachePDFsAPFEL(-1);
 
   // loading hoppet
   cout << "Using HOPPET" << endl;
@@ -60,7 +63,7 @@ int main()
     {
       const double apfel = APFELF2(ix, iq);
       const double hoppet = __hoppet_MOD_f2(ix, iq);
-      cout << "Q=" << iq << "\tx=" << ix << "\tF2apfel=" << apfel << "\thoppet=" << hoppet << "\tratio=" << apfel/hoppet << endl;
+      cout << "Q=" << iq << "\tx=" << ix << "\tF2 apfel=" << apfel << "\thoppet=" << hoppet << "\tratio=" << apfel/hoppet << endl;
     }
 
   cout << "\nTesting FL" << endl;
@@ -69,7 +72,16 @@ int main()
     {
       const double apfel = APFELFL(ix, iq);
       const double hoppet = __hoppet_MOD_fl(ix, iq);
-      cout << "Q=" << iq << "\tx=" << ix << "\tF2apfel=" << apfel << "\thoppet=" << hoppet << "\tratio=" << apfel/hoppet << endl;
+      cout << "Q=" << iq << "\tx=" << ix << "\tFL apfel=" << apfel << "\thoppet=" << hoppet << "\tratio=" << apfel/hoppet << endl;
+    }
+
+  cout << "\nTesting F2LO" << endl;
+  for (const auto& iq: Q)
+    for (const auto& ix: x)
+    {
+      const double apfel = APFEL::F2LO(ix, iq);
+      const double hoppet = __hoppet_MOD_f2lo(ix, iq);
+      cout << "Q=" << iq << "\tx=" << ix << "\tF2LO apfel=" << apfel << "\thoppet=" << hoppet << "\tratio=" << apfel/hoppet << endl;
     }
 
   return 0;

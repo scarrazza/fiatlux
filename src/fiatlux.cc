@@ -46,9 +46,9 @@ namespace fiatlux
   }
 
   //_________________________________________________________________________
-  void FiatLux::PlugStructureFunctions(ext_sf const& f2, ext_sf const& fl) const
+  void FiatLux::PlugStructureFunctions(ext_sf const& f2, ext_sf const& fl, ext_sf const& f2lo) const
   {
-    _proton->set_sf(f2,fl);
+    _proton->set_sf(f2,fl,f2lo);
   }
 
   //_________________________________________________________________________

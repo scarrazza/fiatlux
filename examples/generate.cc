@@ -22,6 +22,7 @@ extern "C" double __hoppet_MOD_initialize(double const&,double const&, double co
 extern "C" double __hoppet_MOD_alphaqed(double const&);
 extern "C" double __hoppet_MOD_f2(double const&, double const&);
 extern "C" double __hoppet_MOD_fl(double const&, double const&);
+extern "C" double __hoppet_MOD_f2lo(double const&, double const&);
 extern "C" double __hoppet_MOD_masses(int const&);
 
 double APFELF2(double const& x, double const& Q)
@@ -55,8 +56,9 @@ int main()
       APFEL::SetQGridParameters(50, 3);
       APFEL::InitializeAPFEL_DIS();
       APFEL::CacheStructureFunctionsAPFEL(-1);
+      APFEL::CachePDFsAPFEL(-1);
       lux.PlugAlphaQED(APFEL::AlphaQED);
-      lux.PlugStructureFunctions(APFELF2, APFELFL);
+      lux.PlugStructureFunctions(APFELF2, APFELFL, APFEL::F2LO);
       lux.InsertInelasticSplitQ({mbottom, 1e100});
     }
   else
@@ -64,7 +66,7 @@ int main()
       cout << "Using HOPPET" << endl;
       __hoppet_MOD_initialize(mcharm, mbottom, mtop);
       lux.PlugAlphaQED(__hoppet_MOD_alphaqed);
-      lux.PlugStructureFunctions(__hoppet_MOD_f2, __hoppet_MOD_fl);
+      lux.PlugStructureFunctions(__hoppet_MOD_f2, __hoppet_MOD_fl, __hoppet_MOD_f2lo);
       lux.InsertInelasticSplitQ({__hoppet_MOD_masses(5),__hoppet_MOD_masses(6)});
     }
 

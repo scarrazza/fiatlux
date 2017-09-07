@@ -27,7 +27,7 @@ namespace fiatlux
   struct StrucFunc
   {
     double x, q2, w2;
-    double FL, F2;
+    double FL, F2, F2LO;
   };
 
   /**
@@ -51,7 +51,7 @@ namespace fiatlux
      * @param q2 the energy scale
      * @return a StrucFunc which contains the F2 and FL structure functions.S
      */
-    StrucFunc compute_proton_structure(double const& x, double const& q2) const;
+    StrucFunc compute_proton_structure(double const& x, double const& q2, bool f2lo_only = false) const;
 
     /**
      * @brief computes W^2 given x and Q^2
@@ -91,7 +91,7 @@ namespace fiatlux
      * @param f2 the F2(x,Q) structure function
      * @param fl the FL(x,Q) structure function
      */
-    void set_sf(ext_sf const& f2, ext_sf const& fl) { _f2 = f2; _fl = fl; }
+    void set_sf(ext_sf const& f2, ext_sf const& fl, ext_sf const& f2lo) { _f2 = f2; _fl = fl; _f2lo = f2lo; }
 
   private:
     /**
@@ -104,7 +104,7 @@ namespace fiatlux
      * @brief Computes the structure functions using the Hermes_ALLM_CLAS model + PDFs from LHAPDF for high scales.
      * @param sf the structure function struct which will be filled by the code.
      */
-    void LHAPDF_Hermes_ALLM_CLAS(StrucFunc & sf) const;
+    void LHAPDF_Hermes_ALLM_CLAS(StrucFunc & sf, bool f2lo_only = false) const;
 
     /**
      * @brief Protected version of R1998 where Q2 is checked before computing.
@@ -157,6 +157,7 @@ namespace fiatlux
     alpha_running _alpha_running; //!< the alpha running function
     ext_sf _f2; //!< the external F2 function for Q2 > transition
     ext_sf _fl; //!< the external FL function for Q2 > transition
+    ext_sf _f2lo; //!< the external F2 at LO function for the MSbar piece
 
     const bool _qed_running;  //!< switch qed alpha running
     double _alpha_ref;        //!< the reference alpha.

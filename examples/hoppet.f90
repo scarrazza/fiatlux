@@ -56,6 +56,15 @@ contains
     res = Fi(F2EM)
   end function f2
 
+  real(dp) function f2lo(x,Q) result(res)
+    real(dp), intent(in) :: x, Q
+    real(dp) :: Fi(-6:6), y_ln1ox
+    call checkinit()
+    y_ln1ox = log(1.0d0/x)
+    Fi =      F_LO  (y_ln1ox, Q)
+    res = Fi(F2EM)
+  end function f2lo
+  
   real(dp) function fl(x,Q) result(res)
     real(dp), intent(in) :: x, Q
     real(dp) :: Fi(-6:6), y_ln1ox

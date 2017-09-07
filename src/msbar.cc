@@ -38,11 +38,12 @@ namespace fiatlux
     const double x = e[0];
     const double q2 = e[1];
     const double z = exp(-ln1oz);
-    const auto kin = _proton->compute_proton_structure(x/z, q2);
+    const auto kin = _proton->compute_proton_structure(x/z, q2, true);
 
-    double res = -pow(z,2)*kin.F2;
+    // following LUX17 we use F2 at LO instead of NLO/NNLO.
+    double res = -pow(z,2)*kin.F2LO;
     if (_use_mu2_as_upper_limit)
-      res += log(1.0/(1.0-z))*(1+pow(1.0-z,2))*kin.F2;
+      res += log(1.0/(1.0-z))*(1+pow(1.0-z,2))*kin.F2LO;
 
     return res;
   }
