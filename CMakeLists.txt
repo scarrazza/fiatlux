@@ -19,7 +19,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
 enable_language(Fortran)
 
 # export version to file
-set(VERSION "\"0.0.1\"")
+set(VERSION "\"0.0.2\"")
 configure_file(
   "${PROJECT_SOURCE_DIR}/src/fiatlux/config.h.in"
   "${PROJECT_SOURCE_DIR}/src/fiatlux/config.h"
