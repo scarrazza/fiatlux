@@ -31,8 +31,6 @@ int main()
 {
   FiatLux lux{"examples/runcard.yml"};
 
-  bool apfel = input().get<bool>("apfel");
-
   const double mcharm = 1.275, mbottom = 4.18, mtop = 173.07;
   cout << "Using APFEL" << endl;
   APFEL::SetPerturbativeOrder(2);
