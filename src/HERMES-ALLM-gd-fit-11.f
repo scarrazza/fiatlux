@@ -1,3 +1,8 @@
+!
+!     Publications that result in parts or as a whole from the use of
+!     this code or its modified form shall cite its original publication    
+!     The HERMES Collaboration [A. Airapetian et al.], JHEP 05 (2011) 126. 
+!
 c$$$*----------------------------------------------------
 c$$$*     created by Lara De Nardo, March 15, 2011
 c$$$*     input: x, Q2, W2
