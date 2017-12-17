@@ -1,6 +1,8 @@
 # fiatlux
 API for LUXqed methodology in global PDF fits.
 
+[![DOI](https://zenodo.org/badge/113965474.svg)](https://zenodo.org/badge/latestdoi/113965474)
+
 ## Project summary and aim
 
 The aim of `libfiatlux` is to provide a blackbox tool which computed the photon PDF at a given Q value
