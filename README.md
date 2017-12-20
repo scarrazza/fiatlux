@@ -6,7 +6,7 @@ API for LUXqed methodology in global PDF fits.
 ## Project summary and aim
 
 The aim of `libfiatlux` is to provide a blackbox tool which computed the photon PDF at a given Q value
-using the LUX approach by Salam, Nason et al. in [arXiv:1607.04266](https://arxiv.org/abs/1607.04266) and [arXiv:1708.01256](https://arxiv.org/abs/1708.01256). The output of this repository is a C++ library
+using the LUX approach by Aneesh, Salam, Nason and Zanderighi in [arXiv:1607.04266](https://arxiv.org/abs/1607.04266) and [arXiv:1708.01256](https://arxiv.org/abs/1708.01256). The output of this repository is a C++ library
 which can be imported and shared to other programs. 
 
 The library implements following features:
