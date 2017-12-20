@@ -76,7 +76,7 @@ The code is documented with Doxygen (folder doc/), if you find methods or classe
 
 If you decide to use this code please cite the following papers:
 
-- The NNPDF3.1QED paper which is the fundamental motivation for this library [arXiv:1712.xxxxxx](https://arxiv.org/abs/)
+- The NNPDF3.1QED paper which is the fundamental motivation for this library [arXiv:1712.07053](https://arxiv.org/abs/1712.07053)
 - The original LUX paper [arXiv:1607.04266](https://arxiv.org/abs/1607.04266)
 - The long/complete version of LUX [arXiv:1708.01256](https://arxiv.org/abs/1708.01256)
 - The GD11-P fit code from: The HERMES Collaboration [A. Airapetian et al.], JHEP 05 (2011) 126. 
