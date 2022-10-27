@@ -20,4 +20,4 @@ jobs:
     - name: Build and install
       run: pip install .[test]
     - name: Test
-      run: pytest
+      run: pytest tests
