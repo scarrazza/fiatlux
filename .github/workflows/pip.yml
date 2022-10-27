@@ -8,14 +8,16 @@ jobs:
     runs-on: ${{ matrix.platform }}
     strategy:
       matrix:
-        platform: [windows-latest, macos-latest, ubuntu-latest]
+        platform: [ubuntu-latest]
         python-version: [3.8, 3.9, "3.10"]
     steps:
     - uses: actions/checkout@v3
     - uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
+    - name: Install xmllint
+      run: sudo apt-get install -y libgsl-dev yaml-cpp
     - name: Build and install
-      run: pip install --verbose .[test]
+      run: pip install .[test]
     - name: Test
       run: pytest
