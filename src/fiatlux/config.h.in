@@ -1,1 +1,1 @@
-#define VERSION @VERSION@
+#define VERSION "@PROJECT_VERSION@"
