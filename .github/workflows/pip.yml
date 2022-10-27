@@ -20,7 +20,7 @@ jobs:
     - name: Install OS requirements
       uses: mstksg/get-package@v1
       with:
-        brew: gcc
+        brew: gfortran
     - name: Build and install
       run: pip install .[test]
     - name: Test
