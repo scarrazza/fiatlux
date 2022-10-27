@@ -6,6 +6,9 @@ on:
     types:
       - published
 
+env:
+  FC: gfortran-11
+
 jobs:
   build:
     name: Build with Pip
