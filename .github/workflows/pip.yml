@@ -28,18 +28,11 @@ jobs:
 
   build_sdist:
     name: Build sdist
-    runs-on: ${{ matrix.platform }}
-    strategy:
-      matrix:
-        platform: [ubuntu-latest]
-        python-version: [3.9]
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
       with:
         submodules: true
-    - uses: actions/setup-python@v4
-      with:
-        python-version: ${{ matrix.python-version }}
     - name: Build SDist
       run: pipx run build --sdist
     - name: Check metadata
@@ -54,7 +47,6 @@ jobs:
     strategy:
       matrix:
         platform: [ubuntu-latest]
-        python-version: [3.9]
     steps:
     - uses: actions/checkout@v3
       with:
@@ -62,7 +54,7 @@ jobs:
     - uses: pypa/cibuildwheel@v2.11.2
       env:
         CIBW_ARCHS_MACOS: auto universal2
-        CIBW_SKIP: pp* cp36-* *-musllinux *_i686
+        CIBW_SKIP: pp* cp36-* *-musllinux_x86_64 *_i686
     - name: Verify clean directory
       run: git diff --exit-code
       shell: bash
