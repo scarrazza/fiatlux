@@ -62,6 +62,7 @@ jobs:
     - uses: pypa/cibuildwheel@v2.11.2
       env:
         CIBW_ARCHS_MACOS: auto universal2
+        CIBW_SKIP: pp* cp36-* *-musllinux *_i686
     - name: Verify clean directory
       run: git diff --exit-code
       shell: bash
