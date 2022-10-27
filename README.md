@@ -7,7 +7,7 @@ API for LUXqed methodology in global PDF fits.
 
 The aim of `libfiatlux` is to provide a blackbox tool which computed the photon PDF at a given Q value
 using the LUX approach by Manohar, Nason, Salam and Zanderighi in [arXiv:1607.04266](https://arxiv.org/abs/1607.04266) and [arXiv:1708.01256](https://arxiv.org/abs/1708.01256). The output of this repository is a C++ library
-which can be imported and shared to other programs. 
+which can be imported and shared to other programs.
 
 The library implements following features:
 - Computes LUX photon by subdiving in elastic, inelastic and msbar components
@@ -16,7 +16,7 @@ The library implements following features:
 
 ### Release and Tag policy
 
-The library is tagged and released when a major and stable status is achieved. 
+The library is tagged and released when a major and stable status is achieved.
 
 ### Testing
 
@@ -24,10 +24,17 @@ Manual testes are available in the `examples` folder.
 
 ## Installation
 
+### Python library
+
+```Shell
+pip install .
+```
+
+### C++ library
+
 `libfialux` depends on the following libraries:
 
 - pkg-config
-- gsl
 - yaml-cpp
 
 optinally to build the examples:
@@ -79,5 +86,5 @@ If you decide to use this code please cite the following papers:
 - The NNPDF3.1QED paper which is the fundamental motivation for this library [arXiv:1712.07053](https://arxiv.org/abs/1712.07053)
 - The original LUX paper [arXiv:1607.04266](https://arxiv.org/abs/1607.04266)
 - The long/complete version of LUX [arXiv:1708.01256](https://arxiv.org/abs/1708.01256)
-- The GD11-P fit code from: The HERMES Collaboration [A. Airapetian et al.], JHEP 05 (2011) 126. 
+- The GD11-P fit code from: The HERMES Collaboration [A. Airapetian et al.], JHEP 05 (2011) 126.
 - The CLAS parametrisation used in hep-ph/0301204 (CLAS) and described in hep-ph/9901360.

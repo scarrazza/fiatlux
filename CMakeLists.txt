@@ -20,7 +20,6 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
 enable_language(Fortran)
 
 find_package(PkgConfig REQUIRED)
-pkg_search_module(GSL REQUIRED gsl)
 pkg_search_module(YAML REQUIRED yaml-cpp)
 
 set(prefix ${CMAKE_INSTALL_PREFIX})
@@ -33,9 +32,7 @@ configure_file(
     )
 
 add_definitions(-DDATA_PATH="${prefix}/share/fiatlux")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${YAMLCPP_CFLAGS} ${GSL_CFLAGS} -std=c++11")
-include_directories(src ${GSL_INCLUDE_DIRS} ${YAML_INCLUDE_DIRS})
-
+include_directories(src ${YAML_INCLUDE_DIRS})
 
 option(PYTHON_ONLY "Compiles only for python." OFF)
 if(PYTHON_ONLY)
@@ -59,7 +56,7 @@ if(PYTHON_ONLY)
                            src/F2N.f
                            src/HERMES-ALLM-gd-fit-11.f)
   target_compile_definitions(_core PRIVATE VERSION_INFO=${PROJECT_VERSION})
-  target_link_libraries(_core PRIVATE ${GSL_LDFLAGS} ${YAML_LDFLAGS})
+  target_link_libraries(_core PRIVATE ${YAML_LDFLAGS})
   install(FILES ${PROJECT_SOURCE_DIR}/data/CrossSectionsOnly_SplinesWithVariableKnots.dat DESTINATION share/fiatlux)
   install(FILES ${PROJECT_SOURCE_DIR}/data/CrossSectionsAndPolarized_SplinesWithVariableKnots.dat DESTINATION share/fiatlux)
   install(TARGETS _core DESTINATION .)
@@ -82,7 +79,7 @@ else()
                             src/F2N.f
                             src/HERMES-ALLM-gd-fit-11.f
                           )
-  target_link_libraries(fiatlux ${GSL_LDFLAGS} ${YAML_LDFLAGS})
+  target_link_libraries(fiatlux ${YAML_LDFLAGS})
 
   install(FILES ${PROJECT_SOURCE_DIR}/scripts/fiatlux-config
     DESTINATION bin PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)

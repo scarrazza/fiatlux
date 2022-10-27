@@ -16,7 +16,7 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install xmllint
-      run: sudo apt-get install -y libgsl-dev libyaml-cpp-dev
+      run: sudo apt-get install -y libyaml-cpp-dev
     - name: Build and install
       run: pip install .[test]
     - name: Test
