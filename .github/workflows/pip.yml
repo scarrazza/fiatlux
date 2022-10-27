@@ -9,7 +9,7 @@ jobs:
     strategy:
       matrix:
         platform: [ubuntu-latest]
-        python-version: [3.8, 3.9, "3.10"]
+        python-version: [3.9]
     steps:
     - uses: actions/checkout@v3
       with:
@@ -21,17 +21,25 @@ jobs:
       run: pip install .[test]
     - name: Test
       run: pytest tests
-    - name: Build wheels
-      run: |
-        python setup.py sdist
-    - uses: pypa/cibuildwheel@v2.11.2
-      env:
-        CIBW_ARCHS_MACOS: auto universal2
-    - name: Store wheels as artifacts
-      uses: actions/upload-artifact@v2
-      with:
-        name: wheels
-        path: |
-          dist
-          wheelhouse/*.whl
 
+  build_sdist:
+    name: Build sdist
+    runs-on: ${{ matrix.platform }}
+    strategy:
+      matrix:
+        platform: [ubuntu-latest]
+        python-version: [3.9]
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: true
+    - uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Build SDist
+      run: pipx run build --sdist
+    - name: Check metadata
+      run: pipx run twine check dist/*
+    - uses: actions/upload-artifact@v3
+      with:
+        path: dist/*.tar.gz
