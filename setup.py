@@ -14,7 +14,7 @@ from setuptools import find_packages
 
 setup(
     name="fiatlux",
-    version="0.1.0",
+    version="0.1.1",
     description="API for LUXqed methodology in global PDF fits",
     author="Stefano Carrazza",
     license="AGPLv3",

@@ -3,11 +3,29 @@
 //
 // Authors: Stefano Carrazza: stefano.carrazza@cern.ch
 
+#include <fstream>
+#include <vector>
+#include <iterator>
+#include <algorithm>
 #include "fiatlux/settings.h"
 #include "fiatlux/tools.h"
+using std::fstream;
+using std::ios;
+using std::vector;
+using std::istream_iterator;
 
 namespace fiatlux
 {
+  //_________________________________________________________________________
+  vector<string> split(string const &input)
+  {
+        stringstream strstr(input);
+        istream_iterator<string> it(strstr);
+        istream_iterator<string> end;
+        vector<string> results(it, end);
+        return results;
+  }
+
   //_________________________________________________________________________
   Settings& input()
   {
@@ -18,13 +36,26 @@ namespace fiatlux
   //_________________________________________________________________________
   void Settings::load(string const& filename)
   {
-    try
-    {
-      _config = YAML::LoadFile(filename);
-    }
-    catch (YAML::BadFile &)
-    {
+    fstream f;
+    f.open(filename.c_str(), ios::in);
+    if (!f.good())
       throw runtime_exception("Settings::load", "cannot find file " + filename);
+
+    string line;
+    while (f.good())
+    {
+      getline(f, line);
+      vector<string> v = split(line);
+      vector<string> entry;
+      for (const auto& i: v)
+      {
+        if (i == "#") break;
+        entry.push_back(i);
+      }
+      if (entry.size() != 2 && entry.size() != 0)
+        throw runtime_exception("Settings::load", "syntax error for entry " + entry[0]);
+      if (entry.size() == 2)
+        _config[entry[0].substr(0, entry[0].size() - 1)] = entry[1];
     }
   }
 
