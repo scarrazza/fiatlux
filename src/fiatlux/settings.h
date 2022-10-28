@@ -6,9 +6,11 @@
 #pragma once
 
 #include <string>
+#include <sstream>
+#include <map>
 using std::string;
-
-#include <yaml-cpp/yaml.h>
+using std::stringstream;
+using std::map;
 
 namespace fiatlux
 {
@@ -43,7 +45,13 @@ namespace fiatlux
     template<class T>
     T get(string const& key)
     {
-      T result = _config[key].as<T>();
+      stringstream ss;
+      T result;
+      string val = _config.at(key);
+      if (val == "true" || val == "on" || val == "True") val = "1";
+      if (val == "false" || val == "off" || val == "False") val = "0";
+      ss << val;
+      ss >> result;
       return result;
     }
 
@@ -65,7 +73,7 @@ namespace fiatlux
     void print() const;
 
   private:
-    YAML::Node _config;
+    map<string, string> _config;
   };
 
   /**
