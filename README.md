@@ -10,7 +10,7 @@ using the LUX approach by Manohar, Nason, Salam and Zanderighi in [arXiv:1607.04
 which can be imported and shared to other programs.
 
 The library implements following features:
-- Computes LUX photon by subdiving in elastic, inelastic and msbar components
+- Computes LUX photon by subdividing in elastic, inelastic and msbar components
 - Allow variations of parameters to estimate uncertainties
 - Generic interface to F2, FL and alpha QED: you can plug APFEL or any other evolution code.
 
@@ -87,4 +87,4 @@ If you decide to use this code please cite the following papers:
 - The original LUX paper [arXiv:1607.04266](https://arxiv.org/abs/1607.04266)
 - The long/complete version of LUX [arXiv:1708.01256](https://arxiv.org/abs/1708.01256)
 - The GD11-P fit code from: The HERMES Collaboration [A. Airapetian et al.], JHEP 05 (2011) 126.
-- The CLAS parametrisation used in hep-ph/0301204 (CLAS) and described in hep-ph/9901360.
+- The CLAS parametrization used in hep-ph/0301204 (CLAS) and described in hep-ph/9901360.

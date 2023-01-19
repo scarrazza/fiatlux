@@ -7,20 +7,16 @@
 #include "fiatlux/tools.h"
 #include "fiatlux/integrator.h"
 #include "fiatlux/settings.h"
+#include "fiatlux/CrossSectionsOnly_SplinesWithVariableKnots.h"
+#include "fiatlux/CrossSectionsAndPolarized_SplinesWithVariableKnots.h"
 #include <cmath>
 
 #include <array>
-#include <fstream>
-using std::fstream;
+#include <sstream>
+using std::stringstream;
 using std::ios;
 using std::getline;
 
-#ifndef DATA_PATH
-#define DATA_PATH "./data"
-#endif
-
-#define STR_EXPAND(top) #top
-#define STR(tok) STR_EXPAND(tok)
 
 namespace fiatlux
 {
@@ -37,19 +33,16 @@ namespace fiatlux
 
         // read data from 1307.6227
         // interpolate latter.
-        fstream f;
+        stringstream f;
         switch (_elastic_param) {
           case elastic_A1_world_spline:
-            f.open((string(DATA_PATH) + "/CrossSectionsOnly_SplinesWithVariableKnots.dat").c_str(), ios::in);
+            f << CrossSectionsOnly_SplinesWithVariableKnots_dat;
             break;
 
           case elastic_A1_world_pol_spline:
-            f.open((string(DATA_PATH) + "/CrossSectionsAndPolarized_SplinesWithVariableKnots.dat").c_str(), ios::in);
+            f << CrossSectionsAndPolarized_SplinesWithVariableKnots_dat;
             break;
           }
-
-        if (f.fail())
-          throw runtime_exception("ElasticPhoton::ElasticPhoton", "data file not found in " + string(STR(DATA_PATH)) );
 
         // initial nodes for interpolation
         _fit.push_back({0,1,1});
@@ -74,7 +67,6 @@ namespace fiatlux
             _fit_uperr.push_back(up);
             _fit_downerr.push_back(dn);
           }
-        f.close();
 
         if (input().get<bool>("verbose"))
           info("ElasticPhoton::ElasticPhothon", "elastic fit loaded npoints " + std::to_string(_fit.size()));
