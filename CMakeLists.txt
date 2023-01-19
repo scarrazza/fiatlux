@@ -10,7 +10,7 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
 endif()
 
 # the project name
-project(fiatlux VERSION "0.1.1")
+project(fiatlux VERSION "0.1.2")
 
 # activating some global properties for the project
 set(CMAKE_CXX_STANDARD 11)
@@ -28,7 +28,6 @@ configure_file(
     "${PROJECT_SOURCE_DIR}/src/fiatlux/config.h"
     )
 
-add_definitions(-DDATA_PATH="${prefix}/share/fiatlux")
 include_directories(src)
 
 option(PYTHON_ONLY "Compiles only for python." OFF)
@@ -53,8 +52,6 @@ if(PYTHON_ONLY)
                            src/F2N.f
                            src/HERMES-ALLM-gd-fit-11.f)
   target_compile_definitions(_core PRIVATE VERSION_INFO=${PROJECT_VERSION})
-  install(FILES ${PROJECT_SOURCE_DIR}/data/CrossSectionsOnly_SplinesWithVariableKnots.dat DESTINATION share/fiatlux)
-  install(FILES ${PROJECT_SOURCE_DIR}/data/CrossSectionsAndPolarized_SplinesWithVariableKnots.dat DESTINATION share/fiatlux)
   install(TARGETS _core DESTINATION .)
 else()
   configure_file(
@@ -80,8 +77,6 @@ else()
     DESTINATION bin PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
   install(FILES ${PROJECT_SOURCE_DIR}/scripts/fiatlux.pc DESTINATION lib/pkgconfig)
   install(DIRECTORY src/fiatlux DESTINATION include)
-  install(FILES ${PROJECT_SOURCE_DIR}/data/CrossSectionsOnly_SplinesWithVariableKnots.dat DESTINATION share/fiatlux)
-  install(FILES ${PROJECT_SOURCE_DIR}/data/CrossSectionsAndPolarized_SplinesWithVariableKnots.dat DESTINATION share/fiatlux)
   install(TARGETS fiatlux DESTINATION lib)
 
   option(ENABLE_EXAMPLES "Enable examples." OFF)
