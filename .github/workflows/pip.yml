@@ -2,9 +2,9 @@ name: "Build wheels and deploy"
 
 on:
   push:
-  release:
-    types:
-      - published
+  # release:
+  #   types:
+  #     - published
 
 jobs:
   build:
@@ -81,6 +81,6 @@ jobs:
       with:
         name: artifact
         path: dist
-    - uses: pypa/gh-action-pypi-publish@master
-      with:
-        password: ${{ secrets.PYPI_TOKEN }}
+    # - uses: pypa/gh-action-pypi-publish@master
+    #   with:
+    #     password: ${{ secrets.PYPI_TOKEN }}
