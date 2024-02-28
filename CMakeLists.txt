@@ -10,7 +10,7 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
 endif()
 
 # the project name
-project(fiatlux VERSION "0.1.2")
+project(fiatlux VERSION "0.1.3")
 
 # activating some global properties for the project
 set(CMAKE_CXX_STANDARD 11)
