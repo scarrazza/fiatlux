@@ -59,7 +59,7 @@ jobs:
       uses: modflowpy/install-gfortran-action@v1
     - uses: pypa/cibuildwheel@v2.16
       env:
-        CIBW_ARCHS_MACOS: auto x86_64 arm64
+        CIBW_ARCHS_MACOS: auto universal2
         CIBW_SKIP: pp* cp36-* *-musllinux_x86_64 *_i686
     - name: Verify clean directory
       run: git diff --exit-code
