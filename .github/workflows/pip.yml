@@ -57,7 +57,7 @@ jobs:
         submodules: true
     - name: Install GNU Fortran
       uses: modflowpy/install-gfortran-action@v1
-    - uses: pypa/cibuildwheel@v2.11.2
+    - uses: pypa/cibuildwheel@v2.16
       env:
         CIBW_ARCHS_MACOS: auto universal2
         CIBW_SKIP: pp* cp36-* *-musllinux_x86_64 *_i686
