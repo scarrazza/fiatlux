@@ -65,8 +65,6 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - uses: actions/download-artifact@v3
-        with:
-          path: wheelhouse/*.whl
       - name: Build and install
         run: |
           ls -l wheelhouse/
