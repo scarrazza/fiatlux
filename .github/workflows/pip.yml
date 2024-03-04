@@ -67,8 +67,7 @@ jobs:
       - uses: actions/download-artifact@v3
       - name: Build and install
         run: |
-          ls **/*
-          pip install --no-index --find-links=wheelhouse/ fiatlux
+          pip install --no-index --find-links=artifact/ fiatlux
       - name: Test
         run: pytest tests
 
