@@ -59,11 +59,13 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - uses: actions/download-artifact@v3
-      - name: Build and install
+      - name: Install built wheel
         run: |
-          pip install --no-index --find-links=artifact/ fiatlux[test]
+          pip install --no-index --find-links=artifact/ fiatlux
       - name: Test
-        run: pytest tests
+        run: |
+          pip install pytest
+          pytest tests
 
   upload_all:
     name: Upload if release
