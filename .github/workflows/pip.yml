@@ -19,6 +19,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           path: dist/*.tar.gz
+          overwrite: true
 
   build_wheels:
     name: Wheels on ${{ matrix.platform }}
@@ -43,6 +44,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           path: wheelhouse/*.whl
+          overwrite: true
 
   test:
     name: Test wheels
