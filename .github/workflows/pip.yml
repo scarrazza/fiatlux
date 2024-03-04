@@ -7,44 +7,20 @@ on:
       - published
 
 jobs:
-  build:
-    name: Build with Pip
-    runs-on: ${{ matrix.platform }}
-    strategy:
-      fail-fast: false
-      matrix:
-        platform: [ubuntu-latest, macos-latest]
-        python-version: ["3.10"]
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        submodules: recursive
-    - uses: actions/setup-python@v4
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install GNU Fortran
-      uses: fortran-lang/setup-fortran@v1
-      with:
-        version: 13
-    - name: Build and install
-      run: pip install .[test]
-    - name: Test
-      run: pytest tests
-
   build_sdist:
     name: Build sdist
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-      with:
-        submodules: true
-    - name: Build SDist
-      run: pipx run build --sdist
-    - name: Check metadata
-      run: pipx run twine check dist/*
-    - uses: actions/upload-artifact@v3
-      with:
-        path: dist/*.tar.gz
+      - uses: actions/checkout@v3
+        with:
+          submodules: true
+      - name: Build SDist
+        run: pipx run build --sdist
+      - name: Check metadata
+        run: pipx run twine check dist/*
+      - uses: actions/upload-artifact@v3
+        with:
+          path: dist/*.tar.gz
 
   build_wheels:
     name: Wheels on ${{ matrix.platform }}
@@ -54,23 +30,47 @@ jobs:
       matrix:
         platform: [ubuntu-latest, macos-latest]
     steps:
-    - uses: actions/checkout@v3
-      with:
-        submodules: true
-    - name: Install GNU Fortran
-      uses: fortran-lang/setup-fortran@v1
-      with:
-        version: 13
-    - uses: pypa/cibuildwheel@v2.16
-      env:
-        CIBW_ARCHS_MACOS: auto x86_64 arm64
-        CIBW_SKIP: pp* cp36-* *-musllinux_x86_64 *_i686
-    - name: Verify clean directory
-      run: git diff --exit-code
-      shell: bash
-    - uses: actions/upload-artifact@v3
-      with:
-        path: wheelhouse/*.whl
+      - uses: actions/checkout@v3
+        with:
+          submodules: true
+      - name: Install GNU Fortran
+        uses: fortran-lang/setup-fortran@v1
+        with:
+          version: 13
+      - uses: pypa/cibuildwheel@v2.16
+        env:
+          CIBW_ARCHS_MACOS: auto x86_64 arm64
+          CIBW_SKIP: pp* cp36-* *-musllinux_x86_64 *_i686
+      - name: Verify clean directory
+        run: git diff --exit-code
+        shell: bash
+      - uses: actions/upload-artifact@v3
+        with:
+          path: wheelhouse/*.whl
+
+  build:
+    name: Build with Pip
+    runs-on: ${{ matrix.platform }}
+    needs: build_wheels
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [ubuntu-latest, macos-latest]
+        python-version: ["3.10"]
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - uses: actions/download-artifact@v3
+        with:
+          path: wheelhouse/*.whl
+      - name: Build and install
+        run: pip install --no-index --find-links=wheelhouse/ fiatlux
+      - name: Test
+        run: pytest tests
 
   upload_all:
     name: Upload if release
@@ -78,13 +78,13 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'release' && github.event.action == 'published'
     steps:
-    - uses: actions/setup-python@v4
-      with:
-        python-version: "3.x"
-    - uses: actions/download-artifact@v3
-      with:
-        name: artifact
-        path: dist
-    - uses: pypa/gh-action-pypi-publish@master
-      with:
-        password: ${{ secrets.PYPI_TOKEN }}
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.x"
+      - uses: actions/download-artifact@v3
+        with:
+          name: artifact
+          path: dist
+      - uses: pypa/gh-action-pypi-publish@master
+        with:
+          password: ${{ secrets.PYPI_TOKEN }}
