@@ -48,8 +48,8 @@ jobs:
         with:
           path: wheelhouse/*.whl
 
-  build:
-    name: Build with Pip
+  test:
+    name: Test wheels
     runs-on: ${{ matrix.platform }}
     needs: build_wheels
     strategy:
@@ -74,7 +74,7 @@ jobs:
 
   upload_all:
     name: Upload if release
-    needs: [build_wheels, build_sdist]
+    needs: [build_wheels, build_sdist, test]
     runs-on: ubuntu-latest
     if: github.event_name == 'release' && github.event.action == 'published'
     steps:
