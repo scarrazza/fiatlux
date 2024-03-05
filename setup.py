@@ -19,7 +19,7 @@ with open(os.path.join(this_directory, "README.md"), encoding="utf-8") as f:
 
 setup(
     name="fiatlux",
-    version="0.1.3",
+    version="0.1.4",
     description="API for LUXqed methodology in global PDF fits",
     author="Stefano Carrazza",
     license="AGPLv3",
